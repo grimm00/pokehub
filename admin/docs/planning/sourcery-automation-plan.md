@@ -36,8 +36,17 @@ Port the mature Sourcery automation tools from **REPO-Magic** to **Pokehub** to 
 ❌ **Manual Sourcery workflow**:
 - Currently manually copying Sourcery feedback from GitHub PRs
 - Manually updating `admin/docs/sourcery-future-improvements.md`
-- No automated priority analysis
 - No structured review extraction
+- Manual priority assessment (which we want to keep!)
+
+✅ **What we want to automate**:
+- Extract Sourcery reviews programmatically
+- Generate clean markdown with priority matrix templates
+- Export to docs folder for manual assessment
+
+❌ **What we DON'T want to automate**:
+- Priority/impact/effort scoring (manual is more thoughtful)
+- Automated recommendations (context matters)
 
 ---
 
@@ -107,37 +116,44 @@ gh_print_status "SUCCESS" "Test message"
 
 ---
 
-### Phase 3: Priority Matrix Automation
-**Goal**: Automate priority/impact/effort analysis
+### Phase 3: Manual Assessment Workflow (SIMPLIFIED)
+**Goal**: Streamline manual priority assessment with better templates
 
-#### Task 3.1: Port Priority Matrix Script
-- [ ] Copy `scripts/monitoring/sourcery-priority-matrix.sh` from REPO-Magic
-- [ ] Update script paths and imports
-- [ ] Adapt priority scoring logic for Pokehub context
-- [ ] Test with recent PRs
+> **Note**: Automated priority scoring is intentionally **NOT** included. Manual assessment is more thoughtful and context-aware. We only automate the extraction and template generation.
 
-#### Task 3.2: Integrate with Existing Priority Matrix
+#### Task 3.1: Enhance Parser Output for Manual Assessment
+- [ ] Ensure parser generates clean priority matrix templates
+- [ ] Add helpful context for manual assessment (location, type, description)
+- [ ] Test template quality with recent PRs
+- [ ] Validate that templates are easy to fill out manually
+
+#### Task 3.2: Create Manual Assessment Workflow
+- [ ] Document process for filling out priority matrix templates
+- [ ] Create examples of completed assessments
+- [ ] Add guidelines for priority/impact/effort decisions
+- [ ] Test workflow with real Sourcery reviews
+
+#### Task 3.3: Integration with Existing Tracking
 - [ ] Review current `admin/docs/sourcery-future-improvements.md` structure
-- [ ] Determine how to merge automated analysis with manual tracking
-- [ ] Create workflow for updating priority matrix document
+- [ ] Document how to transfer manual assessments to tracking doc
+- [ ] Create workflow for archiving completed assessments
 - [ ] Test integration with existing recommendations
 
-#### Task 3.3: Create Priority Matrix Documentation
-- [ ] Port `docs/reference/sourcery-priority-matrix.md` from REPO-Magic
-- [ ] Adapt for Pokehub's priority levels and workflow
-- [ ] Document how to override automated priorities
-- [ ] Add examples of priority matrix output
-
 **Files to create/modify**:
-- `scripts/monitoring/sourcery-priority-matrix.sh` (new)
-- `admin/docs/guides/sourcery-priority-matrix.md` (new)
+- `scripts/monitoring/sourcery-review-parser.sh` (already in Phase 2)
+- `admin/docs/guides/manual-assessment-workflow.md` (new)
 
 **Validation**:
 ```bash
-# Test priority matrix with recent PR
-./scripts/monitoring/sourcery-priority-matrix.sh 28
-./scripts/monitoring/sourcery-priority-matrix.sh 28 --export analysis.md
+# Parser should generate clean templates for manual assessment
+./scripts/monitoring/sourcery-review-parser.sh 28 --output review.md
+# Then manually fill out the priority matrix in review.md
 ```
+
+**Intentionally Excluded**:
+- ❌ `sourcery-priority-matrix.sh` - Automated scoring not needed
+- ❌ Automated priority/impact/effort assignment
+- ❌ Automated recommendation generation
 
 ---
 
@@ -145,10 +161,10 @@ gh_print_status "SUCCESS" "Test message"
 **Goal**: Integrate Sourcery automation into Git Flow workflow
 
 #### Task 4.1: Add Sourcery Commands to Workflow Helper
-- [ ] Add `sourcery-parse` alias to workflow helper
-- [ ] Add `sourcery-analyze` alias for priority matrix
-- [ ] Add `sourcery-export` for exporting to docs
+- [ ] Add `sourcery-parse` alias to workflow helper (extract review to markdown)
+- [ ] Add `sourcery-export` for exporting to docs folder
 - [ ] Update workflow helper documentation
+- [ ] **Note**: No `sourcery-analyze` - manual assessment only
 
 #### Task 4.2: Create Automated PR Review Workflow
 - [ ] Create script to automatically parse Sourcery reviews on PR creation
@@ -171,9 +187,9 @@ gh_print_status "SUCCESS" "Test message"
 **New aliases**:
 ```bash
 # Proposed workflow helper aliases
-sourcery-parse [PR_NUMBER]     # Parse Sourcery review
-sourcery-analyze [PR_NUMBER]   # Run priority matrix analysis
-sourcery-export [PR_NUMBER]    # Export to future improvements doc
+sourcery-parse [PR_NUMBER]     # Parse Sourcery review to markdown with template
+sourcery-export [PR_NUMBER]    # Export parsed review to docs folder
+# Note: No sourcery-analyze - manual assessment is intentional
 ```
 
 ---
@@ -229,10 +245,11 @@ sourcery-export [PR_NUMBER]    # Export to future improvements doc
 
 ### Functional Requirements
 - ✅ Can extract Sourcery reviews from any Pokehub PR
-- ✅ Can generate priority matrix analysis automatically
-- ✅ Can export analysis to markdown files
+- ✅ Can generate clean markdown with priority matrix templates
+- ✅ Can export reviews to docs folder for manual assessment
 - ✅ Integrated into Git Flow workflow helper
 - ✅ Comprehensive documentation available
+- ✅ Manual assessment workflow is clear and easy to follow
 
 ### Quality Requirements
 - ✅ Scripts follow existing Pokehub conventions
@@ -259,12 +276,12 @@ sourcery-export [PR_NUMBER]    # Export to future improvements doc
 6. **Phase 6** (Enhancements) - Future improvements
 
 **Estimated Timeline**:
-- Phase 1: 30 minutes
-- Phase 2: 1 hour
-- Phase 3: 1 hour
-- Phase 4: 1.5 hours
-- Phase 5: 1 hour
-- **Total**: ~5 hours
+- Phase 1: 30 minutes (Core Infrastructure)
+- Phase 2: 1 hour (Review Parser)
+- Phase 3: 45 minutes (Manual Assessment Workflow - simplified, no automation)
+- Phase 4: 1 hour (Workflow Integration - simplified, no analyze command)
+- Phase 5: 1 hour (Documentation & Testing)
+- **Total**: ~4 hours (reduced from 5 hours due to simplified scope)
 
 ---
 

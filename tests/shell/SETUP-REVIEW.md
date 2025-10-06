@@ -196,14 +196,14 @@ assert_service_healthy() {
 
 ## 📋 Action Items
 
-### Immediate (Now)
+### Immediate (Now) ✅ COMPLETE
 
 - [x] ✅ Fix setup.bash (remove DT_ROOT, fix paths)
 - [x] ✅ Add Docker/curl/sleep mocks to mocks.bash
 - [x] ✅ Verify all tests pass (27/27 ✅)
-- [ ] Add Pokehub-specific mocks (docker-compose, redis-cli, etc.)
-- [ ] Add Pokehub-specific assertions (HTTP, containers, etc.)
-- [ ] Document what each helper does
+- [x] ✅ Add Pokehub-specific mocks (docker-compose, redis-cli, Python, npm, psql)
+- [x] ✅ Add Pokehub-specific assertions (HTTP, containers, services, Pokemon API)
+- [x] ✅ Document what each helper does (helpers/README.md)
 
 ### Short-term (This Week)
 

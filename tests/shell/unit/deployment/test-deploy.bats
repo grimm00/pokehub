@@ -18,47 +18,44 @@ teardown() {
 # ============================================================================
 
 @test "deploy: shows usage with environment in output" {
-  # Use mock helpers
-  mock_docker_success
-  mock_curl_success
+  mock_pokehub_services_healthy  # Use composite mock!
   
   run timeout 2 bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging latest
-  # Should at least show it's deploying to staging
-  [[ "$output" =~ "staging" ]] || [[ "$output" =~ "Deploying" ]]
+  assert_output_contains "staging"
 }
 
 @test "deploy: rejects invalid environment" {
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" invalid-env latest
   [ "$status" -eq 1 ]
-  [[ "$output" =~ "Invalid environment" ]]
+  assert_output_contains "Invalid environment"
 }
 
 @test "deploy: accepts development environment" {
   mock_docker_failure  # Fail fast on docker check
   
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" development latest
-  [[ "$output" =~ "development" ]]
+  assert_output_contains "development"
 }
 
 @test "deploy: accepts staging environment" {
   mock_docker_failure  # Fail fast on docker check
   
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging latest
-  [[ "$output" =~ "staging" ]]
+  assert_output_contains "staging"
 }
 
 @test "deploy: accepts production environment" {
   mock_docker_failure  # Fail fast on docker check
   
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" production latest
-  [[ "$output" =~ "production" ]]
+  assert_output_contains "production"
 }
 
 @test "deploy: shows version in output" {
   mock_docker_failure  # Fail fast on docker check
   
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging v1.2.3
-  [[ "$output" =~ "v1.2.3" ]] || [[ "$output" =~ "Version" ]]
+  assert_output_contains "v1.2.3"
 }
 
 @test "deploy: fails when Docker is not running" {
@@ -66,33 +63,29 @@ teardown() {
   
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging latest
   [ "$status" -eq 1 ]
-  [[ "$output" =~ "Docker" ]]
+  assert_output_contains "Docker"
 }
 
 @test "deploy: checks for compose file" {
-  # Create temp directory without compose file
-  TEST_DIR="$(mktemp -d)"
-  cd "$TEST_DIR"
+  setup_test_dir  # Use helper!
   
   mock_docker_success
   
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging latest
   [ "$status" -eq 1 ]
-  [[ "$output" =~ "Compose file" ]] || [[ "$output" =~ "not found" ]]
+  assert_output_contains "Compose file"
   
-  # Cleanup
-  cd - > /dev/null
-  rm -rf "$TEST_DIR"
+  teardown_test_dir  # Use helper!
 }
 
 @test "deploy: script exists and is executable" {
-  [ -f "$PROJECT_ROOT/scripts/deployment/deploy.sh" ]
-  [ -x "$PROJECT_ROOT/scripts/deployment/deploy.sh" ]
+  assert_file_exists "$PROJECT_ROOT/scripts/deployment/deploy.sh"
+  assert_script_executable "$PROJECT_ROOT/scripts/deployment/deploy.sh"
 }
 
 @test "deploy: script has proper shebang" {
   run head -1 "$PROJECT_ROOT/scripts/deployment/deploy.sh"
-  [[ "$output" =~ "#!/bin/bash" ]]
+  assert_output_contains "#!/bin/bash"
 }
 
 @test "deploy: script uses set -e for error handling" {

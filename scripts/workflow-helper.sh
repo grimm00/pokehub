@@ -9,19 +9,34 @@ set -e
 # Get the script directory for relative imports
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Source Git Flow utilities for safe Git operations
-if [ -f "$SCRIPT_DIR/core/git-flow-utils.sh" ]; then
-    source "$SCRIPT_DIR/core/git-flow-utils.sh"
-    gf_init_git_flow_utils >/dev/null 2>&1
+# Source Git Flow utilities from dev-toolkit
+# Detect dev-toolkit installation
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$HOME/.dev-toolkit/lib/git-flow/utils.sh" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
 else
-    echo "❌ Error: git-flow-utils.sh not found. Please ensure all Git Flow scripts are properly installed."
+    echo "❌ Error: dev-toolkit not found. Please install dev-toolkit:"
+    echo "   cd /path/to/dev-toolkit && ./install.sh"
+    echo "   Or set DT_ROOT environment variable"
     exit 1
 fi
+
+# Source Git Flow utilities
+if [ -f "$TOOLKIT_ROOT/lib/git-flow/utils.sh" ]; then
+    source "$TOOLKIT_ROOT/lib/git-flow/utils.sh"
+else
+    echo "❌ Error: dev-toolkit git-flow utilities not found at $TOOLKIT_ROOT"
+    exit 1
+fi
+
+# Initialize Git Flow utilities (must be done before using gf_* functions)
+gf_init_git_flow_utils >/dev/null 2>&1 || true  # Allow init to fail if config doesn't exist
 
 # Use Git Flow configuration
 MAIN_BRANCH="$GF_MAIN_BRANCH"
 DEVELOP_BRANCH="$GF_DEVELOP_BRANCH"
-PROJECT_DIR="/Users/cdwilson/Projects/pokedex"
+PROJECT_DIR="$(gf_get_project_root)"
 
 # Colors for output (only if terminal supports it)
 if [[ -t 1 ]] && command -v tput >/dev/null 2>&1; then

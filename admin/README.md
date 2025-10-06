@@ -1,114 +1,123 @@
 # Admin Directory
 
-This directory contains all project documentation, planning, and administrative files for the Pokedex project.
+This directory contains all project management, planning, documentation, and coordination files for Pokehub.
 
 ## 📁 Directory Structure
 
 ```
 admin/
-├── docs/                    # All project documentation
-│   ├── architecture/         # Architecture Decision Records (ADRs)
-│   │   ├── adrs/           # ADR files (adr-001 through adr-006)
-│   │   ├── database/       # Database design documents
-│   │   └── project-structure-analysis.md
-│   ├── guides/             # Technical guides and documentation
-│   │   ├── implementation/ # Implementation documentation
-│   │   ├── quick-reference/ # Quick reference materials
-│   │   ├── security/       # Security implementation guides
-│   │   └── setup/         # Setup guides
-│   ├── phases/             # Development phase documentation
-│   │   ├── phase2-api-integration/ # Phase 2 API integration docs
-│   │   ├── phase3-authentication.md
-│   │   ├── phase4-favorites.md
-│   │   ├── phase4b-enhanced-ux-plan.md
-│   │   ├── generation-filtering-plan.md
-│   │   └── johto-hoenn-expansion-plan.md
-│   ├── features/           # Feature documentation
-│   ├── planning-notes/     # Planning and brainstorming
-│   ├── progress/          # Progress tracking
-│   ├── testing/           # Testing planning
-│   ├── quick-reference/   # Quick reference docs
-│   ├── PROJECT_STATUS_DASHBOARD.md # Current project status
-│   ├── PROJECT_STATUS_MAINTENANCE.md # Status maintenance process
-│   ├── roadmap.md         # Project roadmap
-│   └── README.md          # Planning overview
-├── chat-logs/              # Development session logs
+├── chat-logs/              # AI conversation history
 │   ├── 2024/              # 2024 development sessions
 │   ├── 2025/              # 2025 development sessions
-│   └── README.md          # Chat logs organization
-├── testing/                # Testing documentation and scripts
-│   ├── archive/           # Archived test results
-│   ├── frontend/          # Frontend testing
+│   └── README.md
+│
+├── feedback/               # External code reviews
+│   └── sourcery/          # Sourcery AI reviews
+│       ├── pr02.md
+│       └── pr10.md
+│
+├── planning/               # Project planning and roadmap
+│   ├── features/          # Feature-based planning
+│   │   ├── sourcery-automation/
+│   │   └── README.md
+│   ├── phases/            # High-level roadmap phases
+│   │   ├── completed/     # Finished phases
+│   │   └── README.md
+│   ├── releases/          # Release management
+│   │   ├── v1.0.0/
+│   │   ├── history.md
+│   │   └── README.md
+│   ├── architecture/      # Architecture decisions
+│   │   ├── adrs/          # Architecture Decision Records
+│   │   └── database/      # Database design
+│   ├── progress/          # Progress tracking
+│   ├── notes/             # Planning insights
+│   └── roadmap.md         # Project roadmap
+│
+├── docs/                   # User-facing documentation
+│   ├── guides/            # Technical guides
+│   │   ├── quick-reference/
+│   │   └── troubleshooting/
+│   ├── enhancements/      # Enhancement documentation
+│   ├── PROJECT_STATUS_*.md
+│   └── README.md
+│
+├── testing/                # Testing strategies and results
+│   ├── strategies/        # Testing strategies
+│   ├── ci-cd/             # CI/CD documentation
+│   ├── frontend/          # Frontend tests
 │   ├── performance/       # Performance testing
 │   ├── results/           # Test results
-│   ├── test-data/         # Test data
-│   ├── test-scripts/      # Testing scripts
-│   └── README.md          # Testing overview
+│   └── README.md
+│
+├── PROJECT-STRUCTURE.md    # Complete structure documentation
 └── README.md              # This file
 ```
 
-## 📚 Documentation Categories
+## 📚 Key Directories Explained
 
-### **Architecture (`docs/architecture/`)**
-- **ADRs**: Architecture Decision Records for major technical decisions
-- **Database**: Database design and schema documentation
-- **Project Structure**: Analysis and design documents
+### **Chat Logs** (`chat-logs/`)
+AI conversation history organized by year. Provides context for decisions and problem-solving approaches.
 
-### **Guides (`docs/guides/`)**
-- **Implementation Guides**: Step-by-step implementation documentation
-- **Technical Guides**: Backend, frontend, and system guides
-- **Security**: Security implementation and best practices
-- **Setup**: Environment setup and configuration guides
+### **Feedback** (`feedback/`)
+External code reviews, primarily from Sourcery AI. Generated using `dt-review` command from dev-toolkit.
 
-### **Phases (`docs/phases/`)**
-- **Phase Documentation**: Development phase plans and progress
-- **Feature Plans**: Detailed feature implementation plans
-- **Progress Tracking**: Current status and milestones
+### **Planning** (`planning/`)
+Project planning hub with multiple subdirectories:
 
-### **Chat Logs (`chat-logs/`)**
-- **Development Sessions**: Recorded development conversations
-- **Problem Solving**: Issues encountered and solutions
-- **Learning Notes**: Key insights and discoveries
+- **Features** - Feature-based planning with `feature-plan.md` and `phase-#.md` files
+- **Phases** - High-level roadmap phases (strategic view)
+  - `completed/` - Finished phases for historical reference
+- **Releases** - Release management with checklists and notes
+- **Architecture** - ADRs and database design decisions
+- **Progress** - Progress tracking and status updates
+- **Notes** - Planning insights and brainstorming
+- **roadmap.md** - Overall project direction
 
-### **Testing (`testing/`)**
-- **Test Strategies**: Comprehensive testing approaches
-- **Test Results**: Performance and functionality test results
-- **Test Scripts**: Automated testing tools and scripts
+### **Docs** (`docs/`)
+User-facing documentation and guides:
+- Quick reference materials
+- Troubleshooting guides
+- Enhancement documentation
+- Project status dashboards
+
+### **Testing** (`testing/`)
+Testing strategies, results, and automation:
+- **strategies/** - Testing approaches and plans
+- **ci-cd/** - CI/CD integration documentation
+- **frontend/** - Frontend-specific tests
+- **performance/** - Performance testing and benchmarks
+- **results/** - Test execution results
 
 ## 🎯 Quick Navigation
 
 ### **Project Status & Progress**
-- [Project Status Dashboard](docs/PROJECT_STATUS_DASHBOARD.md) - **CURRENT PROJECT STATUS**
-- [Status Maintenance Process](docs/PROJECT_STATUS_MAINTENANCE.md) - **HOW TO KEEP STATUS ACCURATE**
-- [Project Roadmap](docs/roadmap.md) - Overall project direction
+- [Project Roadmap](planning/roadmap.md) - Overall project direction
+- [Current Status](planning/progress/current-status.md) - What's happening now
+- [Project Status Dashboard](docs/PROJECT_STATUS_DASHBOARD.md) - Detailed status view
+- [Release History](planning/releases/history.md) - Past releases
 
-### **Getting Started**
-- [Environment Setup](docs/guides/environment-setup-guide.md) - Development setup
-- [Quick Reference](docs/quick-reference/) - Common commands and references
+### **Planning & Features**
+- [Active Features](planning/features/) - Current feature development
+- [Completed Phases](planning/phases/completed/) - Historical phases
+- [Architecture Decisions](planning/architecture/adrs/) - ADRs
+- [Planning Notes](planning/notes/) - Insights and brainstorming
 
-### **Architecture & Design**
-- [ADRs](docs/architecture/adrs/) - Architecture Decision Records
-- [Database Design](docs/architecture/database/) - Database schema and design
-- [Project Structure](docs/architecture/project-structure-analysis.md) - Code organization
-
-### **Development Phases**
-- [Phase 2: API Integration](docs/phases/phase2-api-integration/) - Backend API development
-- [Phase 3: Authentication](docs/phases/phase3-authentication.md) - User authentication
-- [Phase 4: Favorites](docs/phases/phase4-favorites.md) - Favorites functionality
-- [Phase 4B: Enhanced UX](docs/phases/phase4b-enhanced-ux-plan.md) - UX improvements
-- [Generation Filtering](docs/phases/generation-filtering-plan.md) - Generation filtering system
-- [Johto/Hoenn Expansion](docs/phases/johto-hoenn-expansion-plan.md) - Pokemon expansion
-
-### **Technical Documentation**
-- [Backend Overview](docs/guides/backend-overview.md) - Flask backend architecture
-- [Frontend Overview](docs/guides/frontend-overview.md) - React frontend architecture
-- [Security Implementation](docs/guides/security/) - Security features and practices
-- [Docker Containerization](../docs/guides/docker-containerization-guide.md) - Docker setup guide
+### **Documentation & Guides**
+- [Quick Reference](docs/guides/quick-reference/) - Common commands
+- [Troubleshooting](docs/guides/troubleshooting/) - Problem solving
+- [Enhancements](docs/enhancements/) - Enhancement docs
 
 ### **Testing & Quality**
-- [Testing Strategy](testing/comprehensive-testing-strategy.md) - Testing approach
-- [Performance Testing](testing/performance/) - Performance benchmarks
-- [Test Results](testing/results/) - Test execution results
+- [Testing Strategies](testing/strategies/) - Testing approaches
+- [CI/CD Documentation](testing/ci-cd/) - CI/CD integration
+- [Test Results](testing/results/) - Execution results
+- [Performance Testing](testing/performance/) - Benchmarks
+
+### **Development History**
+- [Chat Logs 2025](chat-logs/2025/) - Recent development sessions
+- [Chat Logs 2024](chat-logs/2024/) - Historical sessions
+- [Sourcery Reviews](feedback/sourcery/) - AI code reviews
 
 ## 📝 Documentation Standards
 
@@ -128,24 +137,55 @@ admin/
 - Archive outdated information
 - Regular review and cleanup of old content
 
-## 🔄 Recent Consolidation
+## 🎨 Design Philosophy
 
-This directory structure was consolidated from multiple scattered directories:
-- `admin/planning/` → `admin/docs/`
-- `admin/technical/` → `admin/docs/guides/`
-- `admin/collaboration/` → `admin/docs/`
-- Maintained `admin/chat-logs/` and `admin/testing/` as separate categories
+### Two-Level Planning System
+- **High-Level Phases** (`planning/phases/`) - Strategic roadmap milestones
+- **Feature-Level** (`planning/features/`) - Tactical implementation work
+- **Completed** subdirectory for historical reference
 
-## 📞 Support
+### Feature Naming Convention
+- **New features**: Descriptive names (e.g., `sourcery-automation/`)
+- **Legacy phases**: Keep original names in `phases/completed/`
+- **Structure**: `feature-plan.md` + `phase-#.md` files
 
-For questions about documentation or project structure:
-- Check the relevant guide in `docs/guides/`
-- Review chat logs for similar issues
-- Consult the quick reference materials
-- Check the project roadmap for current priorities
+### Clear Separation of Concerns
+- **Planning** - Roadmap, features, releases, architecture
+- **Docs** - User-facing guides and documentation
+- **Testing** - Strategies, results, CI/CD
+- **Feedback** - External code reviews
+
+## 🔄 Recent Restructuring (October 2025)
+
+This structure was reorganized to follow proven patterns from dev-toolkit v0.2.0:
+
+**Moved:**
+- `docs/roadmap.md` → `planning/roadmap.md`
+- `docs/progress/` → `planning/progress/`
+- `docs/testing/` → `testing/ci-cd/`
+- Testing strategies → `testing/strategies/`
+
+**Added:**
+- `planning/releases/` - Release management
+- `planning/features/` - Feature-based planning structure
+- Better organization within `testing/`
+
+**Benefits:**
+- Clearer organization
+- Better AI navigation
+- Release management ready
+- Proven patterns from successful projects
+
+## 📞 Navigation Tips
+
+- **For current work**: Check `planning/features/` and `planning/progress/`
+- **For history**: Check `chat-logs/` and `planning/phases/completed/`
+- **For guides**: Check `docs/guides/`
+- **For testing**: Check `testing/strategies/` and `testing/ci-cd/`
+- **For structure**: See `PROJECT-STRUCTURE.md`
 
 ---
 
-**Last Updated**: October 1, 2025  
-**Status**: ✅ Consolidated and Organized  
-**Next Review**: Quarterly documentation review
+**Last Updated**: October 6, 2025  
+**Status**: ✅ Restructured with dev-toolkit patterns  
+**Next Review**: After v1.0.0 release

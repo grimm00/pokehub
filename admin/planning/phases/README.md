@@ -13,9 +13,19 @@ This directory contains planning documents for **active and upcoming** developme
 
 ## 🚧 Active Phases
 
-**Currently**: No active phases - ready for new work!
+### Phase 2: Sourcery Review Parser
+**Status**: 🚧 In Progress  
+**Started**: October 5, 2025  
+**Target Completion**: October 5, 2025  
+**File**: `phase2-sourcery-review-parser.md`
 
-**Next Up**: Phase 2 - Sourcery Review Parser (to be created when ready)
+**Objectives**:
+- Port sourcery-review-parser.sh from REPO-Magic
+- Automate extraction of Sourcery reviews from GitHub PRs
+- Generate clean templates for manual priority assessment
+- Test with recent Pokehub PRs
+
+**Current Progress**: Starting - Task 1 (Copy Parser Script)
 
 ---
 

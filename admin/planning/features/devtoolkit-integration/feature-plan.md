@@ -147,7 +147,7 @@ lib/
 - [ ] Compare `git-flow-utils.sh` vs `lib/git/flow.sh`
 - [ ] Compare `sourcery-review-parser.sh` vs `dt-review`
 - [ ] Document Pokehub-specific functionality (if any)
-- [ ] Create comparison report in `admin/planning/notes/`
+- [ ] Create comparison report in `script-comparison-report.md`
 
 **Deliverable:** Detailed comparison document
 

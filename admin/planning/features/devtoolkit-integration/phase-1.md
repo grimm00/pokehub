@@ -234,7 +234,7 @@ Based on the fact that Pokehub scripts were copied from REPO-Magic (dev-toolkit'
    - More modular design
 
 ### Deliverable
-A comprehensive comparison document in `admin/planning/notes/script-comparison-report.md` with:
+A comprehensive comparison document in `script-comparison-report.md` (this directory) with:
 - Detailed analysis of each script
 - Clear keep/delete recommendations
 - Migration steps for Phase 3

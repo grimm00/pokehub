@@ -37,42 +37,71 @@ Integrate the new `dev-toolkit` repository into Pokehub's workflow, compare exis
 
 **Location:** `/Users/cdwilson/Projects/pokedex/scripts/`
 
+**Scripts to Compare/Remove:**
 ```
 scripts/
 ├── core/
-│   ├── github-utils.sh          # GitHub CLI integration
-│   └── git-flow-utils.sh        # Git branching/merging workflows
+│   ├── github-utils.sh          # 454 lines - GitHub CLI integration
+│   ├── git-flow-utils.sh        # 648 lines - Git branching/merging workflows
+│   └── git-flow-safety.sh       # 277 lines - Safety checks
 └── monitoring/
-    └── sourcery-review-parser.sh # Sourcery automation
+    └── sourcery-review-parser.sh # 337 lines - Sourcery automation
 ```
+
+**Pokehub-Specific Scripts (Keep):**
+```
+scripts/
+├── core/
+│   ├── docker-startup.sh        # 50 lines - Pokehub Docker startup
+│   ├── health-check.sh          # 111 lines - Pokehub health checks
+│   └── invalidate-cache.sh      # 50 lines - Pokehub cache API
+├── monitoring/
+│   ├── automated-status-check.sh    # 220 lines - Pokehub status
+│   ├── verify-project-status.sh     # 196 lines - Project verification
+│   └── weekly-status-review.sh      # 204 lines - Weekly reviews
+└── workflow-helper.sh           # 633 lines - Pokehub workflow orchestrator
+```
+
+**Total Lines:**
+- **To Remove:** 1,716 lines (4 scripts)
+- **To Keep:** 1,464 lines (7 scripts)
+- **Reduction:** ~54% of script code
 
 ### Dev-Toolkit Scripts (Canonical Source)
 
-**Location:** `/Users/cdwilson/Projects/dev-toolkit/bin/`
+**Location:** `/Users/cdwilson/Projects/dev-toolkit/`
 
+**Commands:**
 ```
 bin/
 ├── dt-config                    # Configuration management
 ├── dt-git-safety                # Pre-commit safety checks
 ├── dt-sourcery-parse            # Sourcery review extraction
-├── dt-sourcery-analyze          # Sourcery review analysis
-└── dt-review                    # Combined Sourcery workflow
+├── dt-sourcery-analyze          # Sourcery review analysis (future)
+└── dt-review                    # Combined Sourcery workflow ✅ TESTED
 ```
 
 **Supporting Libraries:**
 ```
 lib/
 ├── core/
-│   ├── config.sh                # Configuration utilities
-│   ├── github.sh                # GitHub API operations
-│   └── output.sh                # Consistent output formatting
-├── git/
-│   ├── safety.sh                # Git safety checks
-│   └── flow.sh                  # Git flow utilities
+│   └── github-utils.sh          # 530 lines - GitHub API operations
+├── git-flow/
+│   ├── utils.sh                 # 576 lines - Git flow utilities
+│   ├── safety.sh                # 290 lines - Git safety checks
+│   └── hooks/                   # Pre-commit hooks
 └── sourcery/
-    ├── parser.sh                # Review parsing
-    └── analyzer.sh              # Review analysis
+    └── parser.sh                # 406 lines - Review parsing
 ```
+
+**Total Lines:** 1,802 lines (4 library files)
+
+### Key Findings
+
+✅ **Dev-toolkit is working!** 
+- `dt-review 10` successfully generated `admin/feedback/sourcery/pr10.md`
+- `dt-review 31` and `dt-review 32` both worked perfectly
+- Ready for production use in Pokehub
 
 ---
 
@@ -169,6 +198,38 @@ lib/
 
 ---
 
+## 🚨 Risk Assessment
+
+### Low Risk (Safe to proceed immediately)
+- ✅ **Removing `sourcery-review-parser.sh`**
+  - Already replaced by `dt-review` command
+  - Tested and working (PR #10, #31, #32)
+  - No dependencies in other scripts
+
+### Medium Risk (Needs careful comparison)
+- ⚠️ **Replacing `github-utils.sh`**
+  - Need to verify no Pokehub-specific functions
+  - Check if dev-toolkit version has all features
+  - Pokehub: 454 lines vs Dev-toolkit: 530 lines
+
+- ⚠️ **Replacing `git-flow-utils.sh`**
+  - Large file (648 lines) requires thorough review
+  - Check for Pokehub-specific customizations
+  - Pokehub: 648 lines vs Dev-toolkit: 576 lines
+
+- ⚠️ **Replacing `git-flow-safety.sh`**
+  - Used by pre-commit hooks
+  - Pokehub: 277 lines vs Dev-toolkit: 290 lines
+
+### High Risk (Needs extensive testing)
+- 🔴 **Refactoring `workflow-helper.sh`**
+  - Large orchestration script (633 lines)
+  - Sources multiple utilities
+  - Used by development workflows
+  - Must test all commands after refactor
+
+---
+
 ## 🎯 Decision Points
 
 ### What Stays in Pokehub?
@@ -180,23 +241,27 @@ lib/
 - ✅ Calls Pokehub-specific APIs
 
 **Examples:**
-- `setup.sh` - Pokehub-specific setup
-- `test-docker.sh` - Pokehub-specific testing
-- `scripts/invalidate-cache.sh` - Pokehub API-specific
+- `docker-startup.sh` - Pokehub Docker configuration
+- `health-check.sh` - Pokehub health endpoints
+- `invalidate-cache.sh` - Pokehub cache API
+- `automated-status-check.sh` - Pokehub project status
+- `verify-project-status.sh` - Pokehub verification
+- `weekly-status-review.sh` - Pokehub reporting
+- `workflow-helper.sh` - Pokehub workflow orchestrator (refactor to use dev-toolkit)
 
-### What Moves to Dev-Toolkit?
+### What Removes from Pokehub?
 
-**Move to dev-toolkit if:**
+**Remove from Pokehub if:**
 - ✅ Project-agnostic functionality
-- ✅ Reusable across multiple projects
+- ✅ Already exists in dev-toolkit
 - ✅ No Pokehub-specific dependencies
 - ✅ General development utilities
 
 **Examples:**
-- Git flow utilities
-- GitHub API operations
-- Sourcery automation
-- Pre-commit hooks
+- `github-utils.sh` - Use `lib/core/github-utils.sh` from dev-toolkit
+- `git-flow-utils.sh` - Use `lib/git-flow/utils.sh` from dev-toolkit
+- `git-flow-safety.sh` - Use `lib/git-flow/safety.sh` from dev-toolkit
+- `sourcery-review-parser.sh` - Use `dt-review` command from dev-toolkit
 
 ---
 

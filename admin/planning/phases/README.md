@@ -13,7 +13,19 @@ This directory contains planning documents for **active and upcoming** developme
 
 ## 🚧 Active Phases
 
-**Currently**: No active phases - ready for new work!
+### Phase 1: Sourcery Automation
+**Status**: 🚧 In Progress  
+**Started**: October 5, 2025  
+**Target Completion**: October 5, 2025  
+**File**: `phase1-sourcery-automation.md`
+
+**Objectives**:
+- Port Sourcery automation tools from REPO-Magic
+- Automate review extraction and template generation
+- Integrate into Git Flow workflow
+- Maintain manual priority assessment
+
+**Current Progress**: Phase 1.1 - Core Infrastructure
 
 ---
 

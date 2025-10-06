@@ -35,7 +35,118 @@ EOF
   export -f gh
 }
 
+# Mock docker commands for deployment testing
+mock_docker_success() {
+  docker() {
+    case "$1" in
+      "info")
+        echo "Docker info"
+        return 0
+        ;;
+      "pull")
+        echo "Pulling: $2"
+        return 0
+        ;;
+      "stop"|"rm")
+        echo "$1: $2"
+        return 0
+        ;;
+      "run")
+        echo "Running container"
+        return 0
+        ;;
+      "ps")
+        echo "NAMES    STATUS    PORTS"
+        echo "$2      Up        0.0.0.0:80->80/tcp"
+        return 0
+        ;;
+      *)
+        return 0
+        ;;
+    esac
+  }
+  export -f docker
+}
+
+# Mock docker to simulate failure
+mock_docker_failure() {
+  docker() {
+    return 1
+  }
+  export -f docker
+}
+
+# Mock curl for health checks
+mock_curl_success() {
+  curl() {
+    return 0
+  }
+  export -f curl
+}
+
+# Mock curl to simulate failure
+mock_curl_failure() {
+  curl() {
+    return 1
+  }
+  export -f curl
+}
+
+# Mock sleep to speed up tests
+mock_sleep() {
+  sleep() {
+    return 0
+  }
+  export -f sleep
+}
+
+# Mock docker-compose for Pokehub deployment
+mock_docker_compose_success() {
+  docker-compose() {
+    case "$1" in
+      "up")
+        echo "Starting services..."
+        return 0
+        ;;
+      "down")
+        echo "Stopping services..."
+        return 0
+        ;;
+      "ps")
+        echo "SERVICE          STATUS"
+        echo "pokedex-backend  Up"
+        echo "pokedex-frontend Up"
+        return 0
+        ;;
+      *)
+        return 0
+        ;;
+    esac
+  }
+  export -f docker-compose
+}
+
+# Mock redis-cli for health checks
+mock_redis_cli_success() {
+  redis-cli() {
+    if [ "$1" = "ping" ]; then
+      echo "PONG"
+      return 0
+    fi
+    return 0
+  }
+  export -f redis-cli
+}
+
+# Mock redis-cli failure
+mock_redis_cli_failure() {
+  redis-cli() {
+    return 1
+  }
+  export -f redis-cli
+}
+
 # Restore original commands
 restore_commands() {
-  unset -f git gh 2>/dev/null || true
+  unset -f git gh docker curl sleep docker-compose redis-cli 2>/dev/null || true
 }

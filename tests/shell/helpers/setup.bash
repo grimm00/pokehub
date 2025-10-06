@@ -13,8 +13,7 @@ setup_file() {
     test_dir="$(dirname "$test_dir")"
   done
   export PROJECT_ROOT="$(dirname "$test_dir")"
-  export PATH="$PROJECT_ROOT/bin:$PATH"
-  export DT_ROOT="$PROJECT_ROOT"
+  export PATH="$PROJECT_ROOT/scripts:$PATH"
 }
 
 # Also set it up for individual tests if setup_file isn't called
@@ -22,8 +21,7 @@ if [ -z "$PROJECT_ROOT" ]; then
   # BASH_SOURCE[0] is this file (tests/helpers/setup.bash)
   # Go up two levels: helpers/ -> tests/ -> project root
   export PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-  export PATH="$PROJECT_ROOT/bin:$PATH"
-  export DT_ROOT="$PROJECT_ROOT"
+  export PATH="$PROJECT_ROOT/scripts:$PATH"
 fi
 
 # Create temporary test directory

@@ -543,31 +543,48 @@ tests/
 
 ## 🎯 Recommendation
 
-### ✅ **ADOPT BATS TESTING**
+### ✅ **ADOPT BATS TESTING** (Updated 2025-10-06)
 
 **Rationale:**
-1. **Critical Gap:** 24 untested scripts (1,500+ lines)
+1. **Critical Gap:** 23 untested scripts (1,161 lines immediate scope)
 2. **Proven Framework:** 215 tests in dev-toolkit
 3. **High Value:** Protects critical infrastructure
 4. **Low Risk:** Additive (doesn't break existing tests)
 5. **Fast ROI:** Catches bugs immediately
 
-### Phased Approach
+### 🚫 Exclusions (Updated Decision)
 
-**Phase 1 (Immediate):**
-- Set up infrastructure (1 week)
-- Test `workflow-helper.sh` (most critical)
+**workflow-helper.sh (648 lines) - EXCLUDED**
+- **Reason:** Very complex, will be replaced by dev-toolkit's version
+- **Future:** Test after dev-toolkit develops `dt-init-workflow-helper`
+- **For now:** Use at own risk, manual testing only
+
+**Setup scripts (690 lines) - DEFERRED**
+- **Reason:** Low priority, one-time use
+- **Future:** Add tests if needed
+
+### Phased Approach (Revised)
+
+**Phase 1 (Week 1):**
+- Set up infrastructure
+- Test **deployment scripts** (CRITICAL)
 - Add to CI/CD
+- **33-45 tests**
 
-**Phase 2 (Short-term):**
-- Test deployment scripts
-- Test core scripts
-- Achieve 60%+ coverage
+**Phase 2 (Week 2):**
+- Test **core scripts** (HIGH)
+- Docker startup, health checks
+- **26-33 tests**
 
-**Phase 3 (Long-term):**
-- Test monitoring scripts
-- Test setup scripts
-- Achieve 80%+ coverage
+**Phase 3 (Week 3):**
+- Test **monitoring scripts** (MEDIUM)
+- Status checks, reporting
+- **37-47 tests**
+
+**Phase 4 (Week 4):**
+- Documentation
+- Team training
+- Polish
 
 ### Success Metrics
 

@@ -374,7 +374,7 @@ gh_load_config() {
 # Create default configuration file
 gh_create_default_config() {
     cat > "$CONFIG_FILE" << EOF
-# GitHub Integration Configuration for REPO-Magic
+# GitHub Integration Configuration for Pokehub
 # Customize your GitHub integration settings here
 
 # Main branches

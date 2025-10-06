@@ -8,12 +8,14 @@
 
 ## 📊 Comparison Summary
 
-| Script | Pokehub Lines | Dev-Toolkit Lines | Functions (PH) | Functions (DT) | Verdict |
-|--------|---------------|-------------------|----------------|----------------|---------|
-| `github-utils.sh` | 454 | 530 | 22 | 24 | ✅ **DELETE** - Use dev-toolkit |
-| `git-flow-utils.sh` | 648 | 576 | TBD | TBD | 🔄 Analyzing... |
-| `git-flow-safety.sh` | 277 | 290 | TBD | TBD | 🔄 Analyzing... |
-| `sourcery-review-parser.sh` | 337 | 406 | TBD | TBD | ✅ **DELETE** - Use `dt-review` |
+| Script | Pokehub Lines | Dev-Toolkit Lines | Functions (PH) | Functions (DT) | Risk | Verdict |
+|--------|---------------|-------------------|----------------|----------------|------|---------|
+| `github-utils.sh` | 454 | 530 | 22 | 24 (+2 new) | 🟢 LOW | ✅ **DELETE** - Use dev-toolkit |
+| `git-flow-utils.sh` | 648 | 576 | 41 (27+14 deprecated) | 27 (+1 new) | 🟡 MEDIUM | ✅ **DELETE** - Update install-git-hooks.sh first |
+| `git-flow-safety.sh` | 277 | 290 | 7 | 7 (100% match) | 🟢 LOW | ✅ **DELETE** - Use dev-toolkit |
+| `sourcery-review-parser.sh` | 337 | 406 | N/A | N/A | 🟢 LOW | ✅ **DELETE** - Use `dt-review` (tested!) |
+
+**Total:** 1,716 lines to remove | 58 functions analyzed | 0 Pokehub-specific code found | ✅ Phase 1 Complete
 
 ---
 

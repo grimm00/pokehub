@@ -59,11 +59,17 @@ teardown() {
 }
 
 @test "deploy: fails when Docker is not running" {
+  # Create temp directory with compose file so we get to Docker check
+  setup_test_dir
+  touch docker-compose.yml
+  
   mock_docker_failure
   
   run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging latest
   [ "$status" -eq 1 ]
   assert_output_contains "Docker"
+  
+  teardown_test_dir
 }
 
 @test "deploy: checks for compose file" {

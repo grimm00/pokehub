@@ -10,10 +10,13 @@ This directory contains Bats (Bash Automated Testing System) tests for Pokehub's
 
 ### Run All Shell Tests
 ```bash
-# From project root
-bats tests/shell/
+# Using the test runner (recommended)
+./tests/shell/run-shell-tests.sh
 
-# Or run specific test file
+# Or use bats directly
+bats --recursive tests/shell/unit/
+
+# Run specific test file
 bats tests/shell/unit/test-simple.bats
 ```
 
@@ -22,11 +25,17 @@ bats tests/shell/unit/test-simple.bats
 # Deployment tests only
 bats tests/shell/unit/deployment/
 
-# Core tests only
-bats tests/shell/unit/core/
+# Or use the runner with specific test
+./tests/shell/run-shell-tests.sh -t unit/deployment/test-deploy.bats
+```
 
-# Monitoring tests only
-bats tests/shell/unit/monitoring/
+### Test Runner Options
+```bash
+# Verbose output
+./tests/shell/run-shell-tests.sh -v
+
+# Help
+./tests/shell/run-shell-tests.sh -h
 ```
 
 ---
@@ -66,11 +75,19 @@ tests/shell/
 | Category | Scripts | Tests | Status |
 |----------|---------|-------|--------|
 | **Smoke Tests** | - | 7 | ✅ Complete |
-| **Deployment** | 3 | 0 | 🚧 In Progress |
-| **Core** | 3 | 0 | ⏳ Planned |
-| **Monitoring** | 3 | 0 | ⏳ Planned |
+| **Deployment** | 3 | 71 | ✅ Complete |
+| **Core** | 3 | 0 | ⏳ Planned (Phase 2) |
+| **Monitoring** | 3 | 0 | ⏳ Planned (Phase 3) |
 
-**Total:** 7 tests passing
+**Total:** 78 tests passing in < 25 seconds
+
+### Deployment Scripts (Phase 1 Complete ✅)
+
+| Script | Tests | Coverage |
+|--------|-------|----------|
+| `deploy.sh` | 20 | Environment validation, Docker checks, script structure |
+| `rollback.sh` | 28 | Rollback process, safety features, compose file handling |
+| `test-docker.sh` | 23 | Docker setup, health checks, user instructions |
 
 ---
 
@@ -107,25 +124,54 @@ teardown() {
 }
 ```
 
-### Mocking External Commands
+### Using Pokehub-Specific Helpers
 
 ```bash
-@test "deploy: calls docker command" {
-  # Mock docker command
-  docker() {
-    echo "mocked docker"
-    return 0
-  }
-  export -f docker
+@test "deploy: works with healthy services" {
+  # Use composite mock for all Pokehub services
+  mock_pokehub_services_healthy
   
-  # Run function
-  run deploy_function
+  # Run script
+  run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging latest
   
-  # Assert
-  [ "$status" -eq 0 ]
-  [[ "$output" =~ "mocked" ]]
+  # Use custom assertions
+  assert_output_contains "staging"
+  assert_file_exists "$PROJECT_ROOT/scripts/deployment/deploy.sh"
 }
 ```
+
+### Available Mocks (from `helpers/mocks.bash`)
+
+**Docker & Compose:**
+- `mock_docker_success()` / `mock_docker_failure()`
+- `mock_docker_compose_success()`
+- `mock_curl_success()` / `mock_curl_failure()`
+
+**Pokehub Services:**
+- `mock_redis_cli_success()` / `mock_redis_cli_failure()`
+- `mock_python_success()` / `mock_python_failure()`
+- `mock_npm_success()` / `mock_npm_failure()`
+- `mock_psql_success()` / `mock_psql_failure()`
+
+**Composite Mocks:**
+- `mock_pokehub_services_healthy()` - All services healthy
+- `mock_pokehub_services_unhealthy()` - All services down
+
+### Available Assertions (from `helpers/assertions.bash`)
+
+**General:**
+- `assert_output_contains "text"`
+- `assert_file_exists "/path/to/file"`
+- `assert_script_executable "/path/to/script"`
+
+**Pokehub-Specific:**
+- `assert_http_status "url" 200`
+- `assert_container_running "container-name"`
+- `assert_redis_healthy()`
+- `assert_pokehub_service_healthy "backend|frontend|redis|database"`
+- `assert_pokemon_api_returns_data()`
+
+See `tests/shell/helpers/README.md` for complete documentation.
 
 ### Testing Error Conditions
 
@@ -231,6 +277,7 @@ export -f my_function  # Don't forget this!
 
 ---
 
-**Last Updated:** 2025-10-06  
-**Test Count:** 7 smoke tests  
-**Status:** Phase 1 Day 1 Complete - Infrastructure Setup ✅
+**Last Updated:** 2025-10-07  
+**Test Count:** 78 tests (7 smoke + 71 deployment)  
+**Execution Time:** < 25 seconds  
+**Status:** Phase 1 Complete - Deployment Scripts ✅

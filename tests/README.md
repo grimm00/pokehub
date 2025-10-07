@@ -49,6 +49,9 @@ tests/
 
 ### Run Specific Test Types
 ```bash
+# Shell tests only
+./tests/shell/run-shell-tests.sh
+
 # Unit tests only
 ./tests/run-all-tests.sh --unit-only
 
@@ -79,6 +82,16 @@ tests/
 
 ## 🧪 Test Categories
 
+### Shell Tests ⭐ NEW
+- **Framework**: Bats (Bash Automated Testing System)
+- **Coverage**: 9 scripts, 153 tests, 100% coverage
+- **Execution**: 29 seconds
+- **Documentation**: [TESTING-SHELL.md](../docs/testing/TESTING-SHELL.md)
+- **Scripts Tested**:
+  - Deployment scripts (deploy, rollback, test-docker)
+  - Core scripts (docker-startup, health-check, invalidate-cache)
+  - Monitoring scripts (automated-status-check, verify-project-status, weekly-status-review)
+
 ### Unit Tests
 - **Backend**: API endpoints, models, services, utilities
 - **Frontend**: React components, hooks, utilities
@@ -106,6 +119,13 @@ tests/
 
 ## 🛠️ Test Tools & Technologies
 
+### Shell Script Testing
+- **Framework**: Bats (Bash Automated Testing System)
+- **Helpers**: Custom setup, mocks, assertions
+- **Mocking**: Docker, curl, Redis, Python, npm, psql, git
+- **CI/CD**: Integrated with GitHub Actions
+- **Documentation**: [TESTING-SHELL.md](../docs/testing/TESTING-SHELL.md)
+
 ### Backend Testing
 - **Framework**: pytest
 - **Coverage**: pytest-cov
@@ -126,8 +146,9 @@ tests/
 
 ## 📊 Test Coverage
 
-| Test Type | Status | Coverage | Files |
-|-----------|--------|----------|-------|
+| Test Type | Status | Coverage | Files/Tests |
+|-----------|--------|----------|-------------|
+| **Shell Scripts** | ✅ Complete | 100% | 9 test files, 153 tests |
 | **Backend Unit** | ✅ Complete | 90%+ | 15+ test files |
 | **Frontend Unit** | ✅ Complete | 80%+ | 10+ test files |
 | **Integration** | ✅ Complete | 85%+ | 8+ test files |
@@ -232,6 +253,35 @@ python -m pytest tests/unit/backend/api/test_pokemon_api.py::TestPokemonAPI -v
 ```
 
 ## 📋 Writing Tests
+
+### Shell Test Example
+```bash
+# tests/shell/unit/deployment/test-deploy.bats
+#!/usr/bin/env bats
+
+load '../../../helpers/setup'
+load '../../../helpers/mocks'
+load '../../../helpers/assertions'
+
+setup() {
+  setup_file
+  restore_commands
+}
+
+@test "deploy: shows usage with environment in output" {
+  mock_pokehub_services_healthy
+  run timeout 2 bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" staging latest
+  assert_output_contains "staging"
+}
+
+@test "deploy: rejects invalid environment" {
+  run bash "$PROJECT_ROOT/scripts/deployment/deploy.sh" invalid-env latest
+  [ "$status" -eq 1 ]
+  assert_output_contains "Invalid environment"
+}
+```
+
+**See [TESTING-SHELL.md](../docs/testing/TESTING-SHELL.md) for complete shell testing guide.**
 
 ### Backend Test Example
 ```python
@@ -349,8 +399,25 @@ docker system prune -f
 
 ---
 
-**Total Test Files**: 50+  
-**Test Coverage**: 90%+ backend, 80%+ frontend  
-**Test Execution Time**: <2 minutes for full suite  
+## 📚 Additional Documentation
+
+### Shell Testing
+- **[TESTING-SHELL.md](../docs/testing/TESTING-SHELL.md)** - Complete shell testing guide
+  - Overview and getting started
+  - Running and writing tests
+  - Helper functions, mocking, assertions
+  - Best practices and common patterns
+  - Troubleshooting
+
+### Test Suite Details
+- **[tests/shell/README.md](shell/README.md)** - Shell test suite documentation
+- **Backend Tests**: See `tests/unit/backend/README.md`
+- **Frontend Tests**: See `tests/unit/frontend/README.md`
+
+---
+
+**Total Test Files**: 60+ (including 9 shell test files)  
+**Test Coverage**: 100% shell scripts, 90%+ backend, 80%+ frontend  
+**Test Execution Time**: <2 minutes for full suite (shell tests: 29s)  
 **Status**: ✅ **PRODUCTION READY**
 

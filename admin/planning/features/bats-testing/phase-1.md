@@ -218,45 +218,76 @@ Set up Bats testing infrastructure and test all deployment scripts (CRITICAL pri
 
 ---
 
-### Day 4: Test test-docker.sh (8-10 tests)
+### Day 4: Test test-docker.sh (23 tests) ✅ COMPLETE
 
 **Script:** `scripts/deployment/test-docker.sh`
 
-- [ ] **Read and Understand Script**
+- [x] **Read and Understand Script**
   ```bash
   cat scripts/deployment/test-docker.sh
   ```
+  ✅ Script analyzed (63 lines, simple linear flow)
 
-- [ ] **Create Test File**
+- [x] **Create Test File**
   ```bash
-  # Create tests/shell/unit/deployment/test-docker.bats
+  # Created tests/shell/unit/deployment/test-test-docker.bats
   ```
+  ✅ Test file created with 23 tests
 
-- [ ] **Test Categories:**
+- [x] **Test Categories:**
 
-  **Docker Validation (3-4 tests)**
-  - [ ] Checks Docker is installed
-  - [ ] Verifies Docker is running
-  - [ ] Validates docker-compose available
-  - [ ] Checks Docker version
+  **Docker Checks (2 tests)** ✅
+  - [x] Fails when Docker is not running
+  - [x] Succeeds when Docker is running
 
-  **Container Testing (3-4 tests)**
-  - [ ] Builds test containers
-  - [ ] Starts containers successfully
-  - [ ] Verifies containers are healthy
-  - [ ] Stops and cleans up containers
+  **Build Tests (2 tests)** ✅
+  - [x] Attempts to build Docker image
+  - [x] Reports successful build
 
-  **Integration Testing (2-3 tests)**
-  - [ ] Tests API endpoints
-  - [ ] Verifies database connection
-  - [ ] Checks service communication
+  **Compose Tests (3 tests)** ✅
+  - [x] Tests docker-compose
+  - [x] Starts services with docker-compose
+  - [x] Waits for services to be healthy
 
-- [ ] **Run Tests**
+  **Health Checks (2 tests)** ✅
+  - [x] Tests API health endpoint
+  - [x] Tests frontend endpoint
+
+  **Output & Instructions (5 tests)** ✅
+  - [x] Shows running containers
+  - [x] Shows application URL
+  - [x] Shows API URL
+  - [x] Provides stop instructions
+  - [x] Provides logs instructions
+
+  **Script Structure (9 tests)** ✅
+  - [x] Script exists and is executable
+  - [x] Has proper shebang
+  - [x] Checks Docker is running
+  - [x] Builds Docker image
+  - [x] Uses docker-compose up
+  - [x] Tests health endpoint
+  - [x] Tests frontend
+  - [x] Shows container status
+  - [x] Has sleep for service startup
+
+  **Used New Helpers** ✅
+  - [x] Used `mock_pokehub_services_healthy()` composite mock
+  - [x] Used `assert_output_contains()` for cleaner assertions
+  - [x] Used `assert_file_exists()` and `assert_script_executable()`
+  - [x] Mixed runtime and structure tests for optimal speed
+
+- [x] **Run Tests**
   ```bash
-  bats tests/shell/unit/deployment/test-docker.bats
+  bats tests/shell/unit/deployment/test-test-docker.bats
+  # 23/23 tests passing
   ```
+  ✅ All tests passing, < 5 seconds
 
-**Goal:** 8-10 tests for test-docker.sh
+**Goal:** ✅ 23 tests for test-docker.sh - COMPLETE! (2.3x target!)
+
+**Commits:**
+- `[pending]` - feat: Complete Phase 1 Day 4 - Test test-docker.sh (23 tests)
 
 ---
 

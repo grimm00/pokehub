@@ -255,6 +255,59 @@ mock_pokehub_services_unhealthy() {
   export -f docker curl redis-cli psql
 }
 
+# Mock git status for monitoring scripts
+mock_git_status() {
+  git() {
+    case "$1" in
+      "status")
+        echo "On branch develop"
+        echo "Your branch is up to date with 'origin/develop'."
+        echo ""
+        echo "nothing to commit, working tree clean"
+        return 0
+        ;;
+      "branch")
+        if [ "$2" = "--show-current" ]; then
+          echo "develop"
+        else
+          echo "* develop"
+          echo "  main"
+        fi
+        return 0
+        ;;
+      *)
+        command git "$@"
+        ;;
+    esac
+  }
+  export -f git
+}
+
+# Mock git log for monitoring scripts
+mock_git_log() {
+  git() {
+    case "$1" in
+      "log")
+        echo "commit abc123def456"
+        echo "Author: Test User <test@example.com>"
+        echo "Date:   Mon Oct 7 12:00:00 2025 -0700"
+        echo ""
+        echo "    feat: Test commit"
+        return 0
+        ;;
+      "rev-list")
+        # Mock commit count
+        echo "5"
+        return 0
+        ;;
+      *)
+        command git "$@"
+        ;;
+    esac
+  }
+  export -f git
+}
+
 # Restore original commands
 restore_commands() {
   unset -f git gh docker curl sleep docker-compose redis-cli python npm psql 2>/dev/null || true

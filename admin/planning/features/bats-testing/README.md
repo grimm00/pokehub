@@ -17,7 +17,7 @@
 - **[Phase 1: Deployment Scripts](phase-1.md)** - ✅ Complete (78 tests)
 - **[Phase 2: Core Scripts](phase-2.md)** - ✅ Complete (33 tests)
 - **[Phase 3: Monitoring Scripts](phase-3.md)** - ✅ Complete (42 tests)
-- **Phase 4: Documentation** - ⏳ Planned (see [status-and-next-steps.md](status-and-next-steps.md))
+- **[Phase 4: Documentation & Polish](phase-4.md)** - 📋 Planned (2-3 days)
 
 ### Analysis Documents
 - **[Phase 2 Day 1 Analysis](phase-2-day1-analysis.md)** - Core scripts analysis
@@ -139,6 +139,7 @@ See **[Quick Start Guide](quick-start.md)** for detailed instructions.
 - [Phase 1](phase-1.md) - Deployment scripts (✅ Complete)
 - [Phase 2](phase-2.md) - Core scripts (✅ Complete)
 - [Phase 3](phase-3.md) - Monitoring scripts (✅ Complete)
+- [Phase 4](phase-4.md) - Documentation & polish (📋 Planned)
 
 ### Analysis
 - [Phase 2 Day 1 Analysis](phase-2-day1-analysis.md) - Core scripts

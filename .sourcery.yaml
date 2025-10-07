@@ -1,0 +1,41 @@
+# Sourcery Configuration for Pokehub
+# Only review actual code implementation, skip documentation
+
+# Paths to include in reviews (actual code only)
+path_patterns:
+  - "backend/**/*.py"
+  - "frontend/src/**/*.{ts,tsx,js,jsx}"
+  - "scripts/**/*.sh"
+  - "tests/**/*.{py,bats}"
+  - ".github/workflows/*.yml"
+
+# Paths to exclude from reviews (documentation, planning, logs)
+ignore_patterns:
+  - "admin/**"
+  - "docs/**"
+  - "**/*.md"
+  - "**/chat-logs/**"
+  - "**/planning/**"
+  - "**/feedback/**"
+  - "**/*.txt"
+  - "LICENSE"
+  - ".gitignore"
+  - "**/__pycache__/**"
+  - "**/node_modules/**"
+  - "**/venv/**"
+  - "**/dist/**"
+  - "**/build/**"
+
+# Review rules
+rules: []
+
+# Python-specific settings
+python_version: "3.13"
+
+# GitHub integration settings
+github:
+  # Request reviews from Sourcery
+  request_review: auto
+  
+  # Only review changed files, not entire PR
+  sourcery_branch: main

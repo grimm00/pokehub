@@ -121,16 +121,16 @@ teardown() {
 
 @test "test-docker: provides stop instructions" {
   # Check script structure instead of running (avoids sleep)
-  run grep "docker-compose down" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
+  run grep "docker compose down" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
   [ "$status" -eq 0 ]
-  assert_output_contains "docker-compose down"
+  assert_output_contains "docker compose down"
 }
 
 @test "test-docker: provides logs instructions" {
   # Check script structure instead of running (avoids sleep)
-  run grep "docker-compose logs" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
+  run grep "docker compose logs" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
   [ "$status" -eq 0 ]
-  assert_output_contains "docker-compose logs"
+  assert_output_contains "docker compose logs"
 }
 
 # ============================================================================
@@ -157,8 +157,8 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
-@test "test-docker: script uses docker-compose up" {
-  run grep "docker-compose up" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
+@test "test-docker: script uses docker compose up" {
+  run grep "docker compose up" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
   [ "$status" -eq 0 ]
 }
 
@@ -173,7 +173,7 @@ teardown() {
 }
 
 @test "test-docker: script shows container status" {
-  run grep "docker-compose ps" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
+  run grep "docker compose ps" "$PROJECT_ROOT/scripts/deployment/test-docker.sh"
   [ "$status" -eq 0 ]
 }
 

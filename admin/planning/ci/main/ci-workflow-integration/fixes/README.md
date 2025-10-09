@@ -13,13 +13,13 @@
 - **[Branch Detection Bug Fix](branch-detection-bug-fix.md)** - Fix critical branch detection issue (HIGH priority)
 
 ### Quality Improvements
-- **[Output Logging Fix](output-logging-fix.md)** - Fix output variable logging (MEDIUM priority)
-- **[Regex Pattern Fix](regex-pattern-fix.md)** - Improve markdown link validation (MEDIUM priority)
+- **Output Logging Fix** - Fix output variable logging (MEDIUM priority) - *Documentation pending*
+- **Regex Pattern Fix** - Improve markdown link validation (MEDIUM priority) - *Documentation pending*
 
 ### Architecture Improvements
-- **[Refactor Echo Calls](refactor-echo-calls.md)** - Reduce repetitive echo statements (MEDIUM priority)
-- **[Git Diff Limitation Fix](git-diff-limitation-fix.md)** - Use PR changed files list (MEDIUM priority)
-- **[Branch Patterns Centralization](branch-patterns-centralization.md)** - Centralize branch patterns (HIGH effort)
+- **Refactor Echo Calls** - Reduce repetitive echo statements (MEDIUM priority) - *Documentation pending*
+- **Git Diff Limitation Fix** - Use PR changed files list (MEDIUM priority) - *Documentation pending*
+- **Branch Patterns Centralization** - Centralize branch patterns (HIGH effort) - *Documentation pending*
 
 ---
 
@@ -59,7 +59,7 @@ This directory contains fixes for issues identified in Sourcery feedback for PR 
 ## 📚 Related Documents
 
 ### Source
-- [Sourcery Feedback Analysis](../../../feedback/sourcery/pr42.md) - Original feedback analysis
+- [Sourcery Feedback Analysis](../../../../../feedback/sourcery/pr42.md) - Original feedback analysis
 - [CI Workflow Integration](../README.md) - Main project documentation
 
 ### Implementation

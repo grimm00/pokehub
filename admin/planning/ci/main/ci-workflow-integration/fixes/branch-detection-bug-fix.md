@@ -163,7 +163,7 @@ export GITHUB_HEAD_REF="feat/test-feature"
 
 ## 📚 Related Documents
 
-- [Sourcery Feedback Analysis](../../../feedback/sourcery/pr42.md) - Original issue
+- [Sourcery Feedback Analysis](../../../../../feedback/sourcery/pr42.md) - Original issue
 - [CI Workflow](../../../../.github/workflows/ci.yml) - File to modify
 - [Fixes README](README.md) - Parent directory
 

@@ -38,7 +38,15 @@ jobs:
       - name: Detect branch type and requirements
         id: detect
         run: |
-          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          # Differentiate between push and pull_request events
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH_NAME="${{ github.head_ref }}"
+          else
+            BRANCH_NAME="${{ github.ref_name }}"
+          fi
+          
+          echo "Event: ${{ github.event_name }}"
+          echo "Branch: $BRANCH_NAME"
 
           # Default values
           echo "type=unknown" >> $GITHUB_OUTPUT
@@ -121,6 +129,8 @@ jobs:
             echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Log detection results
+        run: |
           echo "Detected branch type: ${{ steps.detect.outputs.type }}"
           echo "Needs lint: ${{ steps.detect.outputs.needs-lint }}"
           echo "Needs test: ${{ steps.detect.outputs.needs-test }}"

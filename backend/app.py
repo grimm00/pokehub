@@ -7,7 +7,7 @@ from flask_jwt_extended import JWTManager
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
-from database import db
+from .database import db
 from services.security import (
     create_limiter, setup_security_headers, setup_rate_limiting,
     create_error_handlers, setup_request_logging, log_security_event

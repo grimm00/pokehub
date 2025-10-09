@@ -163,7 +163,7 @@ flask db upgrade
 
 - [Database Migration Plan](migration-plan.md) - Current SQLite implementation
 - [ADR-002: Database Design](../adrs/adr-002-database-design.md) - Updated for SQLite
-- [Testing Documentation](../../testing/README.md) - SQLite testing results
+- [Testing Documentation](../../tests/README.md) - SQLite testing results
 - [Environment Setup](../../technical/development-environment-setup.md) - Development setup
 
 ## 🎉 **Conclusion**

@@ -140,35 +140,24 @@ Implement Bats (Bash Automated Testing System) testing framework for Pokehub's s
 
 ### Phase 4: Documentation & Polish ⏳
 
-**Status:** 📋 **PLANNED** (Next)  
+**Status:** ⏳ **PLANNED** (Next)  
 **Duration:** 2-3 days (estimated)  
 **PR:** TBD
 
 **Tasks:**
 - [ ] ⏳ Write `docs/testing/TESTING-SHELL.md`
-  - Overview and getting started
-  - Running tests
-  - Writing tests
-  - Helper functions
-  - Mocking
-  - Assertions
+  - How to run Bats tests
+  - How to write new tests
+  - Mocking patterns
   - Best practices
-  - Common patterns
-  - Troubleshooting
-- [ ] ⏳ Update `tests/README.md` with shell testing section
-- [ ] ⏳ Enhance `run-shell-tests.sh`
+- [ ] ⏳ Update `tests/README.md`
+- [ ] ⏳ Update `run-all-tests.sh`
   - Add `--shell-only` flag
-  - Add `--quiet`, `--filter`, `--list` flags
-- [ ] ⏳ Create training materials
-  - Training outline
-  - Exercises
-  - Quick reference card
+  - Integrate with full test suite
 - [ ] ⏳ Team training session
 - [ ] ⏳ Update CI/CD documentation
 
-**Deliverable:** Complete documentation, enhanced test runner, trained team
-
-**See [phase-4.md](phase-4.md) for detailed plan.**
+**Deliverable:** Complete documentation and trained team
 
 ---
 
@@ -268,7 +257,6 @@ Implement Bats (Bash Automated Testing System) testing framework for Pokehub's s
 - **[Phase 1](phase-1.md)** - Deployment scripts (✅ Complete)
 - **[Phase 2](phase-2.md)** - Core scripts (✅ Complete)
 - **[Phase 3](phase-3.md)** - Monitoring scripts (✅ Complete)
-- **[Phase 4](phase-4.md)** - Documentation & polish (📋 Planned)
 
 ### Analysis
 - **[Phase 2 Day 1 Analysis](phase-2-day1-analysis.md)** - Core scripts analysis
@@ -283,3 +271,5 @@ Implement Bats (Bash Automated Testing System) testing framework for Pokehub's s
 **Last Updated:** 2025-10-07  
 **Status:** 🎉 Phases 1-3 Complete!  
 **Next:** Phase 4 (Documentation & Training)
+
+

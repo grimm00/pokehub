@@ -138,22 +138,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Bats
-      run: |
-        sudo npm install -g bats
-        bats --version
+        run: |
+          sudo npm install -g bats
+          bats --version
 
-    - name: Run shell tests
-      run: |
-        chmod +x tests/shell/run-shell-tests.sh
-        ./tests/shell/run-shell-tests.sh
+      - name: Run shell tests
+        run: |
+          chmod +x tests/shell/run-shell-tests.sh
+          ./tests/shell/run-shell-tests.sh
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: shell-test-results
-        path: tests/shell/test-results/
-        if-no-files-found: ignore
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shell-test-results
+          path: tests/shell/test-results/
+          if-no-files-found: ignore
 
   test:
     runs-on: ubuntu-latest

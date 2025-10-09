@@ -320,7 +320,6 @@ Complete automated documentation validation and project management system.
 
 ### Analysis
 - [Current CI Analysis](current-ci-analysis.md) - Existing workflow analysis
-- [Dev-toolkit CI Analysis](devtoolkit-ci-analysis.md) - Advanced CI patterns
 
 ### External
 - [Hub-and-Spoke Best Practices](../../notes/opportunities/external/administration/hub-and-spoke-documentation-best-practices.md) - Documentation system

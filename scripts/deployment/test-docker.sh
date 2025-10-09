@@ -22,7 +22,7 @@ fi
 
 # Test docker-compose
 echo "🚀 Testing docker-compose..."
-if docker-compose up -d; then
+if docker compose up -d; then
     echo "✅ Docker Compose started successfully"
     
     # Wait for services to be healthy
@@ -47,14 +47,14 @@ if docker-compose up -d; then
     
     # Show running containers
     echo "📊 Running containers:"
-    docker-compose ps
+    docker compose ps
     
     echo ""
     echo "🎉 Docker setup test complete!"
     echo "Full application available at: http://localhost"
     echo "API available at: http://localhost/api/v1/"
-    echo "To stop: docker-compose down"
-    echo "To view logs: docker-compose logs -f"
+    echo "To stop: docker compose down"
+    echo "To view logs: docker compose logs -f"
     
 else
     echo "❌ Failed to start Docker Compose"

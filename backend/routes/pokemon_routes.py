@@ -1,10 +1,10 @@
 from flask_restful import Resource, reqparse, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from database import db
-from models.pokemon import Pokemon
-from models.user import UserPokemon
-from services.cache import pokemon_cache, cache_manager
-from utils.generation_config import get_generation_range, get_generation_data, get_generation_summary
+from ..database import db
+from ..models.pokemon import Pokemon
+from ..models.user import UserPokemon
+from ..services.cache import pokemon_cache, cache_manager
+from ..utils.generation_config import get_generation_range, get_generation_data, get_generation_summary
 import requests
 import os
 

@@ -76,9 +76,8 @@ The environment is now fully configured and ready for active development:
 
 ## 📚 **Documentation Created**
 
-- [Environment Setup Guide](../technical/environment-setup-guide.md) - Complete setup instructions
-- [Updated Technical README](../technical/README.md) - Added environment guide reference
-- [Collaboration Rules](../collaboration/rules.md) - Updated with terminal limitations
+- [Environment Setup Guide](../../../docs/guides/setup/environment-setup-guide.md) - Complete setup instructions
+- [Admin Technical Documentation](../../README.md) - Main admin documentation
 
 ## 🎯 **Success Metrics Achieved**
 

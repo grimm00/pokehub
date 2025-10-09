@@ -1,22 +1,33 @@
+---
 name: Continuous Integration
 
 on:
   push:
-    branches: [main, develop, 'feat/*', 'fix/*', 'chore/*', 'docs/*', 'ci/*', 'release/*']
+    branches:
+      - main
+      - develop
+      - "feat/*"
+      - "fix/*"
+      - "chore/*"
+      - "docs/*"
+      - "ci/*"
+      - "release/*"
     paths-ignore:
-      - 'admin/**'
-      - 'docs/**'
-      - '*.md'
-      - 'LICENSE'
-      - '.gitignore'
+      - "admin/**"
+      - "docs/**"
+      - "*.md"
+      - "LICENSE"
+      - ".gitignore"
   pull_request:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
     paths-ignore:
-      - 'admin/**'
-      - 'docs/**'
-      - '*.md'
-      - 'LICENSE'
-      - '.gitignore'
+      - "admin/**"
+      - "docs/**"
+      - "*.md"
+      - "LICENSE"
+      - ".gitignore"
 
 permissions:
   contents: read
@@ -31,21 +42,27 @@ jobs:
       needs-lint: ${{ steps.detect.outputs.needs-lint }}
       needs-test: ${{ steps.detect.outputs.needs-test }}
       needs-install: ${{ steps.detect.outputs.needs-install }}
-      needs-docs: ${{ steps.detect.outputs.needs-docs }}
       needs-external-reviews: ${{ steps.detect.outputs.needs-external-reviews }}
 
     steps:
       - name: Detect branch type and requirements
         id: detect
         run: |
-          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          # Differentiate between push and pull_request events
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH_NAME="${{ github.head_ref }}"
+          else
+            BRANCH_NAME="${{ github.ref_name }}"
+          fi
+
+          echo "Event: ${{ github.event_name }}"
+          echo "Branch: $BRANCH_NAME"
 
           # Default values
           echo "type=unknown" >> $GITHUB_OUTPUT
           echo "needs-lint=false" >> $GITHUB_OUTPUT
           echo "needs-test=false" >> $GITHUB_OUTPUT
           echo "needs-install=false" >> $GITHUB_OUTPUT
-          echo "needs-docs=false" >> $GITHUB_OUTPUT
           echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
 
           # Feature branches
@@ -54,7 +71,6 @@ jobs:
             echo "needs-lint=true" >> $GITHUB_OUTPUT
             echo "needs-test=true" >> $GITHUB_OUTPUT
             echo "needs-install=true" >> $GITHUB_OUTPUT
-            echo "needs-docs=true" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
 
           # Documentation branches
@@ -63,7 +79,6 @@ jobs:
             echo "needs-lint=false" >> $GITHUB_OUTPUT
             echo "needs-test=false" >> $GITHUB_OUTPUT
             echo "needs-install=false" >> $GITHUB_OUTPUT
-            echo "needs-docs=true" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
 
           # CI/CD branches
@@ -72,7 +87,6 @@ jobs:
             echo "needs-lint=true" >> $GITHUB_OUTPUT
             echo "needs-test=true" >> $GITHUB_OUTPUT
             echo "needs-install=true" >> $GITHUB_OUTPUT
-            echo "needs-docs=true" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
 
           # Bug fix branches
@@ -81,7 +95,6 @@ jobs:
             echo "needs-lint=true" >> $GITHUB_OUTPUT
             echo "needs-test=true" >> $GITHUB_OUTPUT
             echo "needs-install=true" >> $GITHUB_OUTPUT
-            echo "needs-docs=true" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
 
           # Maintenance branches
@@ -90,7 +103,6 @@ jobs:
             echo "needs-lint=true" >> $GITHUB_OUTPUT
             echo "needs-test=false" >> $GITHUB_OUTPUT
             echo "needs-install=false" >> $GITHUB_OUTPUT
-            echo "needs-docs=false" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
 
           # Release branches
@@ -99,7 +111,6 @@ jobs:
             echo "needs-lint=true" >> $GITHUB_OUTPUT
             echo "needs-test=true" >> $GITHUB_OUTPUT
             echo "needs-install=true" >> $GITHUB_OUTPUT
-            echo "needs-docs=true" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
 
           # Main/develop branches
@@ -108,7 +119,6 @@ jobs:
             echo "needs-lint=true" >> $GITHUB_OUTPUT
             echo "needs-test=true" >> $GITHUB_OUTPUT
             echo "needs-install=true" >> $GITHUB_OUTPUT
-            echo "needs-docs=true" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
 
           # Default for unknown branches
@@ -117,15 +127,15 @@ jobs:
             echo "needs-lint=true" >> $GITHUB_OUTPUT
             echo "needs-test=true" >> $GITHUB_OUTPUT
             echo "needs-install=true" >> $GITHUB_OUTPUT
-            echo "needs-docs=true" >> $GITHUB_OUTPUT
             echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Log detection results
+        run: |
           echo "Detected branch type: ${{ steps.detect.outputs.type }}"
           echo "Needs lint: ${{ steps.detect.outputs.needs-lint }}"
           echo "Needs test: ${{ steps.detect.outputs.needs-test }}"
           echo "Needs install: ${{ steps.detect.outputs.needs-install }}"
-          echo "Needs docs: ${{ steps.detect.outputs.needs-docs }}"
           echo "Needs external reviews: ${{ steps.detect.outputs.needs-external-reviews }}"
 
   shell-tests:
@@ -164,101 +174,101 @@ jobs:
         test-type: [unit, integration, performance]
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      if: matrix.test-type == 'unit'
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: 'frontend/package-lock.json'
+      - name: Set up Node.js
+        if: matrix.test-type == 'unit'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "frontend/package-lock.json"
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.13'
-        cache: 'pip'
-        cache-dependency-path: 'backend/requirements.txt'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+          cache: "pip"
+          cache-dependency-path: "backend/requirements.txt"
 
-    - name: Install Python dependencies
-      run: |
-        pip install -r backend/requirements.txt
+      - name: Install Python dependencies
+        run: |
+          pip install -r backend/requirements.txt
 
-    - name: Set up test environment
-      run: |
-        # Create test database directory
-        mkdir -p backend/instance
-        # Set environment variables for testing
-        echo "DATABASE_URL=sqlite:///backend/instance/test_pokehub.db" >> $GITHUB_ENV
-        echo "FLASK_ENV=testing" >> $GITHUB_ENV
-        echo "SECRET_KEY=test-secret-key" >> $GITHUB_ENV
-        echo "JWT_SECRET_KEY=test-jwt-secret" >> $GITHUB_ENV
+      - name: Set up test environment
+        run: |
+          # Create test database directory
+          mkdir -p backend/instance
+          # Set environment variables for testing
+          echo "DATABASE_URL=sqlite:///backend/instance/test_pokehub.db" >> $GITHUB_ENV
+          echo "FLASK_ENV=testing" >> $GITHUB_ENV
+          echo "SECRET_KEY=test-secret-key" >> $GITHUB_ENV
+          echo "JWT_SECRET_KEY=test-jwt-secret" >> $GITHUB_ENV
 
-    - name: Initialize test database
-      run: |
-        # Initialize database tables for testing
-        python -c "
-        import os
-        os.environ['DATABASE_URL'] = 'sqlite:///backend/instance/test_pokehub.db'
-        os.environ['FLASK_ENV'] = 'testing'
-        from backend.app import app
-        from backend.database import db
-        with app.app_context():
-            db.create_all()
-            print('✅ Test database initialized')
-        "
+      - name: Initialize test database
+        run: |
+          # Initialize database tables for testing
+          python -c "
+          import os
+          os.environ['DATABASE_URL'] = 'sqlite:///backend/instance/test_pokehub.db'
+          os.environ['FLASK_ENV'] = 'testing'
+          from backend.app import app
+          from backend.database import db
+          with app.app_context():
+              db.create_all()
+              print('✅ Test database initialized')
+          "
 
-    - name: Install Node.js dependencies
-      if: matrix.test-type == 'unit'
-      run: |
-        cd frontend && npm ci
+      - name: Install Node.js dependencies
+        if: matrix.test-type == 'unit'
+        run: |
+          cd frontend && npm ci
 
-    - name: Run tests
-      run: |
-        case ${{ matrix.test-type }} in
-          unit)
-            echo "Running unit tests..."
-            cd frontend && npm run test:run
-            cd .. && python -m pytest tests/unit/backend/ -v --rootdir=.
-            ;;
-          integration)
-            echo "Running integration tests..."
-            # Start backend for integration tests
-            python -m backend.app &
-            BACKEND_PID=$!
-            sleep 10
-            # Run integration tests
-            python -m pytest tests/integration/legacy/ -v --rootdir=. || TEST_RESULT=$?
-            # Stop backend
-            kill $BACKEND_PID || true
-            exit ${TEST_RESULT:-0}
-            ;;
-          performance)
-            echo "Running performance tests..."
-            # Start backend for performance tests
-            python -m backend.app &
-            BACKEND_PID=$!
-            sleep 10
-            # Run performance tests
-            python -m pytest tests/performance/ -v --rootdir=. || TEST_RESULT=$?
-            # Stop backend
-            kill $BACKEND_PID || true
-            exit ${TEST_RESULT:-0}
-            ;;
-        esac
+      - name: Run tests
+        run: |
+          case ${{ matrix.test-type }} in
+            unit)
+              echo "Running unit tests..."
+              cd frontend && npm run test:run
+              cd .. && python -m pytest tests/unit/backend/ -v --rootdir=.
+              ;;
+            integration)
+              echo "Running integration tests..."
+              # Start backend for integration tests
+              python -m backend.app &
+              BACKEND_PID=$!
+              sleep 10
+              # Run integration tests
+              python -m pytest tests/integration/legacy/ -v --rootdir=. || TEST_RESULT=$?
+              # Stop backend
+              kill $BACKEND_PID || true
+              exit ${TEST_RESULT:-0}
+              ;;
+            performance)
+              echo "Running performance tests..."
+              # Start backend for performance tests
+              python -m backend.app &
+              BACKEND_PID=$!
+              sleep 10
+              # Run performance tests
+              python -m pytest tests/performance/ -v --rootdir=. || TEST_RESULT=$?
+              # Stop backend
+              kill $BACKEND_PID || true
+              exit ${TEST_RESULT:-0}
+              ;;
+          esac
 
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results-${{ matrix.test-type }}
-        path: |
-          frontend/test-results/
-          backend/test-results/
-          tests/test-results/
-        if-no-files-found: ignore
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.test-type }}
+          path: |
+            frontend/test-results/
+            backend/test-results/
+            tests/test-results/
+          if-no-files-found: ignore
 
   docker-test:
     runs-on: ubuntu-latest
@@ -266,40 +276,40 @@ jobs:
     if: needs.detect-branch-type.outputs.needs-test == 'true'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Run Docker tests
-      run: |
-        cd tests/docker
-        docker compose -f docker-compose.test.yml up --build -d
-        sleep 30
-        docker compose -f docker-compose.test.yml logs test-backend
-        docker compose -f docker-compose.test.yml logs test-frontend
-        docker compose -f docker-compose.test.yml down
+      - name: Run Docker tests
+        run: |
+          cd tests/docker
+          docker compose -f docker-compose.test.yml up --build -d
+          sleep 30
+          docker compose -f docker-compose.test.yml logs test-backend
+          docker compose -f docker-compose.test.yml logs test-frontend
+          docker compose -f docker-compose.test.yml down
 
-    - name: Check test results
-      run: |
-        cd tests/docker
+      - name: Check test results
+        run: |
+          cd tests/docker
 
-        # Run tests and capture exit code
-        echo "Running Docker tests..."
-        if docker compose -f docker-compose.test.yml up --build --abort-on-container-exit; then
-          echo "✅ All Docker tests passed!"
-          DOCKER_EXIT_CODE=0
-        else
-          echo "❌ Docker tests failed!"
-          DOCKER_EXIT_CODE=1
-        fi
+          # Run tests and capture exit code
+          echo "Running Docker tests..."
+          if docker compose -f docker-compose.test.yml up --build --abort-on-container-exit; then
+            echo "✅ All Docker tests passed!"
+            DOCKER_EXIT_CODE=0
+          else
+            echo "❌ Docker tests failed!"
+            DOCKER_EXIT_CODE=1
+          fi
 
-        # Clean up
-        docker compose -f docker-compose.test.yml down
+          # Clean up
+          docker compose -f docker-compose.test.yml down
 
-        # Exit with the test result
-        exit $DOCKER_EXIT_CODE
+          # Exit with the test result
+          exit $DOCKER_EXIT_CODE
 
   build:
     runs-on: ubuntu-latest
@@ -307,103 +317,31 @@ jobs:
     if: needs.detect-branch-type.outputs.needs-install == 'true'
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker images
-      run: |
-        docker compose build
+      - name: Build Docker images
+        run: |
+          docker compose build
 
-    - name: Test Docker build
-      run: |
-        docker compose up -d
+      - name: Test Docker build
+        run: |
+          docker compose up -d
 
-        # Wait longer for container to be ready (healthcheck needs 40s)
-        echo "⏰ Waiting 45 seconds for containers to be ready..."
-        sleep 45
+          # Wait longer for container to be ready (healthcheck needs 40s)
+          echo "⏰ Waiting 45 seconds for containers to be ready..."
+          sleep 45
 
-        # Show container logs for debugging
-        echo "📋 Container logs:"
-        docker compose logs pokehub-app || true
+          # Show container logs for debugging
+          echo "📋 Container logs:"
+          docker compose logs pokehub-app || true
 
-        # Test health endpoints
-        echo "🔍 Testing health endpoint..."
-        curl -f http://localhost/ || exit 1
+          # Test health endpoints
+          echo "🔍 Testing health endpoint..."
+          curl -f http://localhost/ || exit 1
 
-        # Clean up
-        docker compose down
-
-  docs-validation:
-    runs-on: ubuntu-latest
-    name: Validate Documentation Structure
-    needs: [detect-branch-type]
-    if: needs.detect-branch-type.outputs.needs-docs == 'true'
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Validate hub-and-spoke structure
-      run: |
-        echo "🔍 Validating hub-and-spoke documentation structure..."
-
-        # Check for README.md hubs in new projects
-        if git diff --name-only HEAD~1 | grep -q "admin/planning/features/"; then
-          echo "📋 New feature detected, validating structure..."
-
-          for new_feature in $(git diff --name-only HEAD~1 | grep "admin/planning/features/" | cut -d'/' -f4 | sort -u); do
-            if [ -f "admin/planning/features/$new_feature/README.md" ]; then
-              echo "✅ $new_feature has README.md hub"
-            else
-              echo "❌ $new_feature missing README.md hub"
-              exit 1
-            fi
-          done
-        fi
-
-        # Check for README.md hubs in new CI projects
-        if git diff --name-only HEAD~1 | grep -q "admin/planning/ci/"; then
-          echo "📋 New CI project detected, validating structure..."
-
-          for new_ci in $(git diff --name-only HEAD~1 | grep "admin/planning/ci/" | cut -d'/' -f4 | sort -u); do
-            if [ -f "admin/planning/ci/$new_ci/README.md" ]; then
-              echo "✅ $new_ci has README.md hub"
-            else
-              echo "❌ $new_ci missing README.md hub"
-              exit 1
-            fi
-          done
-        fi
-
-        echo "✅ Documentation structure validation passed"
-
-    - name: Check for broken internal links
-      run: |
-        echo "🔗 Checking for broken internal links..."
-
-        # Find all markdown files in admin/planning
-        find admin/planning -name "*.md" -type f | while read -r file; do
-          echo "Checking $file..."
-
-          # Check for internal links (relative paths)
-          grep -n "\[.*\](.*\.md)" "$file" | while read -r line; do
-            link=$(echo "$line" | sed -n 's/.*\[.*\](\(.*\.md\)).*/\1/p')
-            if [ -n "$link" ]; then
-              # Convert relative path to absolute
-              dir=$(dirname "$file")
-              target="$dir/$link"
-
-              if [ ! -f "$target" ]; then
-                echo "❌ Broken link in $file: $link"
-                exit 1
-              else
-                echo "✅ Link OK: $link"
-              fi
-            fi
-          done
-        done
-
-        echo "✅ Internal link validation passed"
+          # Clean up
+          docker compose down

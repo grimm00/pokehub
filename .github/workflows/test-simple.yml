@@ -9,23 +9,23 @@ jobs:
   test-simple:
     runs-on: ubuntu-latest
     name: Simple Test Job
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Simple test
         run: |
           echo "🔍 Testing GitHub Actions functionality..."
           echo "Branch: ${{ github.ref_name }}"
           echo "Event: ${{ github.event_name }}"
           echo "✅ Simple test completed successfully!"
-          
+
       - name: Test branch detection
         run: |
           BRANCH_NAME="${{ github.ref_name }}"
           echo "Branch name: $BRANCH_NAME"
-          
+
           if [[ "$BRANCH_NAME" =~ ^ci/ ]]; then
             echo "✅ Detected CI branch: $BRANCH_NAME"
           else

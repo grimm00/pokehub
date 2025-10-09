@@ -292,7 +292,7 @@ curl http://localhost:5000/api/v1/pokemon
 
 - [ADR-002: Database Design](../adrs/adr-002-database-design.md)
 - [Environment Template](../../technical/env-template.txt)
-- [Test Results](../../testing/test-results/test-execution-summary.md)
+- [Test Results](../../../testing/results/integration/test-execution-summary.md)
 - [API Documentation](../../technical/guides/api-versioning-strategy.md)
 
 ## 🎉 **MIGRATION COMPLETION SUMMARY**

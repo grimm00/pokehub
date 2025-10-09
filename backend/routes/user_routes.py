@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..database import db
 from ..models.user import User, UserPokemon
 from ..models.pokemon import Pokemon
-from utils.validators import validate_and_log_response, DataValidator
+from ..utils.validators import validate_and_log_response, DataValidator
 
 class UserList(Resource):
     """Handle GET /api/users and POST /api/users"""

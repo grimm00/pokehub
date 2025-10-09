@@ -69,7 +69,7 @@ This directory contains database design, migration planning, and database-relate
 
 - **[ADR-002: Database Design](../adrs/adr-002-database-design.md)** - Architecture decisions
 - **[Progress Documentation](../progress/)** - Implementation status
-- **[Project Roadmap](../roadmap.md)** - Strategic planning
+- **[Project Roadmap](../../roadmap.md)** - Strategic planning
 - **[Technical Guides](../../technical/)** - Implementation guides
 
 ## 🚀 Quick Start

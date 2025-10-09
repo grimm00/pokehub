@@ -1,8 +1,17 @@
+---
 name: Continuous Integration
 
 on:
   push:
-    branches: [main, develop, 'feat/*', 'fix/*', 'chore/*', 'docs/*', 'ci/*', 'release/*']
+    branches:
+      - main
+      - develop
+      - 'feat/*'
+      - 'fix/*'
+      - 'chore/*'
+      - 'docs/*'
+      - 'ci/*'
+      - 'release/*'
     paths-ignore:
       - 'admin/**'
       - 'docs/**'
@@ -10,7 +19,9 @@ on:
       - 'LICENSE'
       - '.gitignore'
   pull_request:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
     paths-ignore:
       - 'admin/**'
       - 'docs/**'
@@ -44,7 +55,7 @@ jobs:
           else
             BRANCH_NAME="${{ github.ref_name }}"
           fi
-          
+
           echo "Event: ${{ github.event_name }}"
           echo "Branch: $BRANCH_NAME"
 

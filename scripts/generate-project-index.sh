@@ -67,8 +67,14 @@ cat > "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md" << 'EOF'
 
 EOF
 
-# Replace timestamp placeholder
-sed -i.bak "s/\[TIMESTAMP\]/$TIMESTAMP/g" "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md" && rm "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md.bak"
+# Replace timestamp placeholder (CI-safe version)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS sed
+    sed -i.bak "s/\[TIMESTAMP\]/$TIMESTAMP/g" "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md" && rm "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md.bak"
+else
+    # Linux sed
+    sed -i "s/\[TIMESTAMP\]/$TIMESTAMP/g" "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md"
+fi
 
 # 2. Generate Area-Specific Indexes
 generate_area_index() {

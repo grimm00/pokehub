@@ -1,6 +1,6 @@
 # main Projects
 
-**Generated:** 2025-10-10 10:40:33  
+**Generated:** 2025-10-10 10:50:50  
 **Area:** main  
 **Location:** admin/planning/features/main
 
@@ -17,15 +17,15 @@
 
 ### devtoolkit-integration
 
-- **Status:** Unknown
-- **Priority:** Unknown
+- **Status:** Planning  
+- **Priority:** Medium  
 - **Location:** `admin/planning/features/main/devtoolkit-integration/`
 - **README:** [View](admin/planning/features/main/devtoolkit-integration//README.md)
 
 ### sourcery-automation
 
-- **Status:** Unknown
-- **Priority:** Unknown
+- **Status:** Planning  
+- **Priority:** Medium  
 - **Location:** `admin/planning/features/main/sourcery-automation/`
 - **README:** [View](admin/planning/features/main/sourcery-automation//README.md)
 

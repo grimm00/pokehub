@@ -68,19 +68,19 @@ main() {
         npm install --save-dev vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
     fi
     
-    # Copy test files to frontend directory temporarily
-    print_status "Setting up test files..."
+    # Check if test files exist in current location
+    print_status "Checking test files..."
     
-    # Create test directories in frontend
-    mkdir -p src/__tests__/components/pokemon
-    mkdir -p src/__tests__/pages
-    mkdir -p src/__tests__/test-utils
+    if [ ! -d "src/__tests__" ]; then
+        print_error "Test directory src/__tests__ not found. Please ensure tests are in the correct location."
+        exit 1
+    fi
     
-    # Copy test files
-    cp "$SCRIPT_DIR/components/pokemon"/*.test.tsx src/__tests__/components/pokemon/
-    cp "$SCRIPT_DIR/pages"/*.test.tsx src/__tests__/pages/
-    cp "$SCRIPT_DIR/test-utils"/*.ts src/__tests__/test-utils/
-    cp "$SCRIPT_DIR/vitest.config.ts" ./
+    # Verify test files exist
+    if [ ! -f "src/__tests__/components/pokemon/PokemonCard.test.tsx" ]; then
+        print_error "PokemonCard test file not found. Please ensure tests are properly organized."
+        exit 1
+    fi
     
     # Update package.json to include test script if not present
     if ! grep -q '"test"' package.json; then
@@ -100,11 +100,6 @@ main() {
     # Run tests
     print_status "Running frontend tests..."
     npm test
-    
-    # Clean up test files
-    print_status "Cleaning up test files..."
-    rm -rf src/__tests__
-    rm -f vitest.config.ts
     
     print_success "Frontend tests completed!"
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import { PokemonPage } from '@/pages/PokemonPage'
@@ -237,7 +237,10 @@ describe('PokemonPage', () => {
         render(<PokemonWithRouter />)
 
         const searchInput = screen.getByPlaceholderText('Enter Pokemon name...')
-        fireEvent.change(searchInput, { target: { value: 'char' } })
+        
+        await act(async () => {
+            fireEvent.change(searchInput, { target: { value: 'char' } })
+        })
 
         await waitFor(() => {
             expect(mockPokemonStore.fetchPokemon).toHaveBeenCalledWith({ search: 'char', type: undefined, sort: 'id', page: 1 })
@@ -253,7 +256,9 @@ describe('PokemonPage', () => {
         expect(typeFilter).toHaveValue('all')
 
         // Test that the type filter can be changed
-        fireEvent.change(typeFilter, { target: { value: 'fire' } })
+        await act(async () => {
+            fireEvent.change(typeFilter, { target: { value: 'fire' } })
+        })
 
         // The PokemonSearch component handles type filter changes internally
         // This test verifies that the type filter is rendered and can be changed
@@ -265,7 +270,10 @@ describe('PokemonPage', () => {
         render(<PokemonWithRouter />)
 
         const sortSelect = screen.getByLabelText('Sort by')
-        fireEvent.change(sortSelect, { target: { value: 'name' } })
+        
+        await act(async () => {
+            fireEvent.change(sortSelect, { target: { value: 'name' } })
+        })
 
         // The PokemonPage component doesn't handle sort changes directly
         // The PokemonSearch component handles it internally
@@ -307,7 +315,10 @@ describe('PokemonPage', () => {
         render(<PokemonWithRouter />)
 
         const loadMoreButton = screen.getByText('Load More Pokemon')
-        fireEvent.click(loadMoreButton)
+        
+        await act(async () => {
+            fireEvent.click(loadMoreButton)
+        })
 
         expect(mockPokemonStore.loadMore).toHaveBeenCalled()
     })
@@ -351,7 +362,10 @@ describe('PokemonPage', () => {
         })
 
         const addButton = screen.getByLabelText('Add to favorites')
-        fireEvent.click(addButton)
+        
+        await act(async () => {
+            fireEvent.click(addButton)
+        })
 
         expect(mockFavoritesStore.toggleFavorite).toHaveBeenCalledWith(1, 25) // user.id, Pikachu pokemon_id
     })

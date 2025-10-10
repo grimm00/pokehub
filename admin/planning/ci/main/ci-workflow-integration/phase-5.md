@@ -50,22 +50,45 @@ External review tools that only trigger on PR creation, allowing fast developmen
 - Test external review control
 
 **Tasks:**
-- [ ] Update `.sourcery.yaml` configuration
-- [ ] Configure Cursor Bugbot settings
-- [ ] Test with different branch types
+- [ ] Update `.sourcery.yaml` configuration for PR-only reviews
+- [ ] Configure Cursor Bugbot settings for PR-only reviews
+- [ ] Test with different branch types (feat/docs/ci/fix/chore/release)
 - [ ] Document external review workflow
+- [ ] Measure quota usage before and after
 
 **Deliverables:**
-- Updated Sourcery configuration
-- Cursor Bugbot configuration
+- Updated Sourcery configuration with PR-only settings
+- Cursor Bugbot configuration with PR-only settings
 - Test results for external review control
+- Quota usage metrics and comparison
 
 **Success Criteria:**
 - [ ] External reviews only trigger on PR creation
 - [ ] No external reviews on push to branches
-- [ ] Quota usage significantly reduced
+- [ ] Quota usage reduced by 80-90%
+- [ ] Review quality maintained for PRs
 
 **Result:** [Summary of what was achieved]
+
+### Implementation Details
+
+#### Sourcery Configuration Updates
+Current `.sourcery.yaml` already has good path filtering. Need to add:
+- PR-only review triggers
+- Branch-based review control
+- Quota management settings
+
+#### Cursor Bugbot Configuration
+Need to configure:
+- PR-only review triggers
+- Branch-based review control
+- Review frequency limits
+
+#### Testing Strategy
+1. **Push Test**: Push to feature branch → verify no external review
+2. **PR Test**: Create PR from feature branch → verify external review triggered
+3. **Quota Test**: Measure quota usage before/after configuration
+4. **Quality Test**: Verify review quality maintained for PRs
 
 ---
 

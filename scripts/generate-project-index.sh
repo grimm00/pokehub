@@ -156,18 +156,18 @@ EOF
     for project_dir in "$area_dir"/*/; do
         if [ -d "$project_dir" ]; then
  project_name=$(basename "$project_dir")
-            ((project_count++))
+            project_count=$((project_count + 1))
             
             # Get project status from README if it exists
  status="Unknown"
             if [ -f "$project_dir/README.md" ]; then
-                status=$(grep -E "^\*\*Status:\*\*" "$project_dir/README.md" 2>/dev/null | sed 's/.*\*\*Status:\*\* *//' | head -1 || echo "Unknown")
+                status=$(grep -E "^\*\*Status:\*\*" "$project_dir/README.md" 2>/dev/null | sed 's/.*\*\*Status:\*\* *//' | head -1 | tr -d '\n' || echo "Unknown")
             fi
             
             # Get project priority from README if it exists
  priority="Unknown"
             if [ -f "$project_dir/README.md" ]; then
-                priority=$(grep -E "^\*\*Priority:\*\*" "$project_dir/README.md" 2>/dev/null | sed 's/.*\*\*Priority:\*\* *//' | head -1 || echo "Unknown")
+                priority=$(grep -E "^\*\*Priority:\*\*" "$project_dir/README.md" 2>/dev/null | sed 's/.*\*\*Priority:\*\* *//' | head -1 | tr -d '\n' || echo "Unknown")
             fi
             
             cat >> "$INDEX_OUTPUT_DIR/${area}-projects.md" << EOF
@@ -216,7 +216,7 @@ if [ -d "admin/planning/ci" ]; then
     for project_dir in "admin/planning/ci"/*/; do
         if [ -d "$project_dir" ]; then
             project_name=$(basename "$project_dir")
-            ((ci_count++))
+            ci_count=$((ci_count + 1))
             
  status="Unknown"
             if [ -f "$project_dir/README.md" ]; then
@@ -265,7 +265,7 @@ for area in "frontend" "backend" "main"; do
     if [ -d "admin/planning/features/$area" ]; then
         for project_dir in "admin/planning/features/$area"/*/; do
             if [ -d "$project_dir" ]; then
-                ((count++))
+                count=$((count + 1))
             fi
         done
     fi
@@ -277,7 +277,7 @@ done
 if [ -d "admin/planning/ci" ]; then
     for project_dir in "admin/planning/ci"/*/; do
         if [ -d "$project_dir" ]; then
-            ((ci_count++))
+            ci_count=$((ci_count + 1))
         fi
     done
 fi

@@ -161,13 +161,13 @@ EOF
             # Get project status from README if it exists
  status="Unknown"
             if [ -f "$project_dir/README.md" ]; then
-                status=$(grep -E "^\*\*Status:\*\*" "$project_dir/README.md" | sed 's/.*\*\*Status:\*\* *//' | head -1 || echo "Unknown")
+                status=$(grep -E "^\*\*Status:\*\*" "$project_dir/README.md" 2>/dev/null | sed 's/.*\*\*Status:\*\* *//' | head -1 || echo "Unknown")
             fi
             
             # Get project priority from README if it exists
  priority="Unknown"
             if [ -f "$project_dir/README.md" ]; then
-                priority=$(grep -E "^\*\*Priority:\*\*" "$project_dir/README.md" | sed 's/.*\*\*Priority:\*\* *//' | head -1 || echo "Unknown")
+                priority=$(grep -E "^\*\*Priority:\*\*" "$project_dir/README.md" 2>/dev/null | sed 's/.*\*\*Priority:\*\* *//' | head -1 || echo "Unknown")
             fi
             
             cat >> "$INDEX_OUTPUT_DIR/${area}-projects.md" << EOF
@@ -220,7 +220,7 @@ if [ -d "admin/planning/ci" ]; then
             
  status="Unknown"
             if [ -f "$project_dir/README.md" ]; then
-                status=$(grep -E "^\*\*Status:\*\*" "$project_dir/README.md" | sed 's/.*\*\*Status:\*\* *//' | head -1 || echo "Unknown")
+                status=$(grep -E "^\*\*Status:\*\*" "$project_dir/README.md" 2>/dev/null | sed 's/.*\*\*Status:\*\* *//' | head -1 || echo "Unknown")
             fi
             
             cat >> "$INDEX_OUTPUT_DIR/ci-projects.md" << EOF

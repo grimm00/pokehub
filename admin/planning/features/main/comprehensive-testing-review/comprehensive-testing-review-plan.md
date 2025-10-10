@@ -3,6 +3,7 @@
 **Date:** 2025-01-20  
 **Status:** 🟡 Planned  
 **Priority:** High  
+**Project Type:** Main Project Initiative  
 **Estimated Duration:** 4-6 hours  
 **Dependencies:** Frontend test cleanup completion
 

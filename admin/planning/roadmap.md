@@ -107,6 +107,7 @@
   - [x] Issues identified (API mocking, act warnings)
   - [x] Test duplication problem discovered and analyzed
   - [x] Comprehensive testing strategy created
+  - [x] Documentation: `admin/planning/features/frontend/testing-analysis/`
   - [ ] **Frontend Testing Implementation** 🟡 **IN PROGRESS**
     - [ ] Fix API mocking issues
     - [ ] Resolve act warnings
@@ -115,6 +116,14 @@
   - [ ] Component testing completion
   - [ ] Integration testing
   - [ ] E2E testing setup
+
+- [ ] **Comprehensive Testing Review** 🟡 **PLANNED**
+  - [ ] Testing architecture optimization
+  - [ ] E2E testing setup with Playwright
+  - [ ] CI/CD testing optimization
+  - [ ] Unified test configuration
+  - [ ] Performance testing integration
+  - [x] Documentation: `admin/planning/features/main/comprehensive-testing-review/`
 
 #### Deliverables:
 - Fully functional frontend

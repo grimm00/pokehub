@@ -16,8 +16,13 @@ class ApiClient {
   private config: ApiConfig
 
   constructor() {
+    // Set baseURL based on environment
+    const baseURL = process.env.NODE_ENV === 'test' 
+      ? 'http://localhost:5000' 
+      : process.env.VITE_API_URL || ''
+    
     this.config = {
-      baseURL: '', // Use relative URLs - nginx will proxy /api/ to backend
+      baseURL, // Use absolute URLs in test, relative in production
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',

@@ -113,7 +113,9 @@ describe('PokemonSearch', () => {
     const searchInput = screen.getByPlaceholderText('Enter Pokemon name...')
 
     // Trigger search input change
-    fireEvent.change(searchInput, { target: { value: 'test' } })
+    await act(async () => {
+      fireEvent.change(searchInput, { target: { value: 'test' } })
+    })
 
     // The spinner should be visible immediately after input change
     const spinner = document.querySelector('.animate-spin')

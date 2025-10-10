@@ -9,6 +9,10 @@ export default defineConfig({
         setupFiles: [path.resolve(__dirname, '../src/__tests__/test-utils/setup.ts')],
         globals: true,
     },
+    define: {
+        'process.env.NODE_ENV': '"test"',
+        'process.env.VITE_API_URL': '"http://localhost:5000"',
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, '../src'),

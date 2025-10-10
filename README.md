@@ -118,10 +118,24 @@ We provide three different ways to set up the development environment:
 3. **Manual Setup**: Step-by-step setup for full control
 
 ### Prerequisites
+
+**Required:**
 - Python 3.9 or higher
 - Redis (for caching)
 - Git
 - Virtual environment (venv or conda)
+- **[Dev-Toolkit](https://github.com/grimm00/dev-toolkit)** - Development utilities for Git Flow, Sourcery reviews, and pre-commit hooks
+  ```bash
+  git clone https://github.com/grimm00/dev-toolkit.git ~/.dev-toolkit
+  cd ~/.dev-toolkit
+  ./install.sh
+  ```
+
+**Optional (for enhanced performance):**
+- `jq` - JSON processor for faster GitHub API operations (20x faster branch cleanup)
+  - macOS: `brew install jq`
+  - Linux: `apt-get install jq`
+  - Windows: `choco install jq`
 
 ### Quick Start
 
@@ -258,13 +272,47 @@ main (production) ← develop (integration) ← feat/* (features)
 **Quick Start:**
 ```bash
 # Start new feature
-./scripts/git-flow-helper.sh start-feature my-feature
+./scripts/workflow-helper.sh start-feature my-feature
 
 # Check status  
-./scripts/git-flow-helper.sh status
+./scripts/workflow-helper.sh status
 ```
 
 > 📖 **For detailed workflow and contributing guidelines**, see [CONTRIBUTING.md](CONTRIBUTING.md)
+
+### 🛠️ Dev-Toolkit Commands
+
+This project uses [dev-toolkit](https://github.com/grimm00/dev-toolkit) for development utilities:
+
+**Git Flow Safety:**
+```bash
+dt-git-safety check          # Run all safety checks
+dt-git-safety branch         # Check current branch
+dt-git-safety conflicts      # Check for merge conflicts
+dt-install-hooks             # Install pre-commit hooks
+```
+
+**Sourcery Code Reviews:**
+```bash
+dt-review 42                 # Extract Sourcery review for PR #42
+                            # Saves to admin/feedback/sourcery/pr42.md
+```
+
+**Configuration:**
+```bash
+dt-config show              # View current config
+dt-config create global     # Create global config
+dt-config create project    # Create project config (.dev-toolkit.conf)
+```
+
+**Pre-commit Hooks:**
+- Automatically installed via `dt-install-hooks`
+- Checks branch safety (prevents commits to protected branches)
+- Detects potential merge conflicts
+- Prevents committing sensitive files (.env, .key, etc.)
+- Warns about large files (>10MB)
+
+> 💡 **Tip:** Run `dt-install-hooks` after cloning to enable automatic safety checks!
 
 ## 🔌 API Endpoints
 

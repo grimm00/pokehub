@@ -19,18 +19,25 @@ with app.app_context():
 
 # Seed Pokemon data (with timeout and error handling)
 echo "🌱 Seeding Pokemon data..."
-cd /app && timeout 30s python -c "
+SEEDING_TIMEOUT=${POKEMON_SEEDING_TIMEOUT:-120}
+
+# Get generation range dynamically from config
+GEN_RANGE=$(cd /app && python -c "from backend.utils.generation_config import get_generation_range_string; print(get_generation_range_string())" 2>/dev/null || echo "unknown")
+
+cd /app && timeout ${SEEDING_TIMEOUT}s python -c "
 from backend.app import app
 from backend.utils.pokemon_seeder import pokemon_seeder
+from backend.utils.generation_config import get_generation_range_string
 with app.app_context():
     try:
         result = pokemon_seeder.seed_all_generations()
-        print(f'✅ Seeded {result[\"successful\"]} Pokemon from Generations 1-3')
+        gen_range = get_generation_range_string()
+        print(f'✅ Seeded {result[\"successful\"]} Pokemon from Generations {gen_range}')
     except Exception as e:
         print(f'⚠️ Pokemon seeding failed: {e}')
         print('🔄 Application will continue without seeded data')
 " || {
-    echo "⚠️ Pokemon seeding timed out after 30 seconds"
+    echo "⚠️ Pokemon seeding timed out after ${SEEDING_TIMEOUT} seconds (Generations ${GEN_RANGE})"
     echo "🔄 Application will continue without seeded data"
 }
 

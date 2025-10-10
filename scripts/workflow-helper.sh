@@ -9,19 +9,34 @@ set -e
 # Get the script directory for relative imports
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Source Git Flow utilities for safe Git operations
-if [ -f "$SCRIPT_DIR/core/git-flow-utils.sh" ]; then
-    source "$SCRIPT_DIR/core/git-flow-utils.sh"
-    gf_init_git_flow_utils >/dev/null 2>&1
+# Source Git Flow utilities from dev-toolkit
+# Detect dev-toolkit installation
+if [ -n "${DT_ROOT:-}" ]; then
+    TOOLKIT_ROOT="$DT_ROOT"
+elif [ -f "$HOME/.dev-toolkit/lib/git-flow/utils.sh" ]; then
+    TOOLKIT_ROOT="$HOME/.dev-toolkit"
 else
-    echo "❌ Error: git-flow-utils.sh not found. Please ensure all Git Flow scripts are properly installed."
+    echo "❌ Error: dev-toolkit not found. Please install dev-toolkit:"
+    echo "   cd /path/to/dev-toolkit && ./install.sh"
+    echo "   Or set DT_ROOT environment variable"
     exit 1
 fi
+
+# Source Git Flow utilities
+if [ -f "$TOOLKIT_ROOT/lib/git-flow/utils.sh" ]; then
+    source "$TOOLKIT_ROOT/lib/git-flow/utils.sh"
+else
+    echo "❌ Error: dev-toolkit git-flow utilities not found at $TOOLKIT_ROOT"
+    exit 1
+fi
+
+# Initialize Git Flow utilities (must be done before using gf_* functions)
+gf_init_git_flow_utils >/dev/null 2>&1 || true  # Allow init to fail if config doesn't exist
 
 # Use Git Flow configuration
 MAIN_BRANCH="$GF_MAIN_BRANCH"
 DEVELOP_BRANCH="$GF_DEVELOP_BRANCH"
-PROJECT_DIR="/Users/cdwilson/Projects/pokedex"
+PROJECT_DIR="$(gf_get_project_root)"
 
 # Colors for output (only if terminal supports it)
 if [[ -t 1 ]] && command -v tput >/dev/null 2>&1; then
@@ -46,6 +61,90 @@ fi
 
 # Ensure we're in the project directory
 cd "$PROJECT_DIR"
+
+# ============================================================================
+# GITHUB API BATCHING FUNCTIONS
+# ============================================================================
+
+# Get merged branches using batched GitHub API call
+# This is significantly faster than checking each branch individually
+# Usage: get_merged_branches_batched "$branches_to_check"
+# Returns: Newline-separated list of merged branch names
+get_merged_branches_batched() {
+    local branches_to_check="$1"
+    
+    # Validate input
+    if [ -z "$branches_to_check" ]; then
+        return 0
+    fi
+    
+    # Get ALL merged PRs in one API call
+    local merged_prs
+    merged_prs=$(gh pr list --state merged --json headRefName,state \
+        --jq '.[] | select(.state=="MERGED") | .headRefName' 2>/dev/null)
+    
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "${RED}❌ Failed to fetch merged PRs from GitHub (exit code: $exit_code)${NC}" >&2
+        echo "${YELLOW}💡 Possible causes:${NC}" >&2
+        echo "   - GitHub CLI not authenticated (run: gh auth login)" >&2
+        echo "   - Network connectivity issues" >&2
+        echo "   - GitHub API rate limiting" >&2
+        return 1
+    fi
+    
+    # Filter branches against merged PRs
+    local merged_branches=""
+    for branch in $branches_to_check; do
+        if echo "$merged_prs" | grep -q "^${branch}$"; then
+            if [ -z "$merged_branches" ]; then
+                merged_branches="$branch"
+            else
+                merged_branches="$merged_branches
+$branch"
+            fi
+        fi
+    done
+    
+    echo "$merged_branches"
+    return 0
+}
+
+# Get merged branches using individual API calls (fallback method)
+# This is slower but doesn't require jq
+# Usage: get_merged_branches_individual "$branches_to_check"
+# Returns: Newline-separated list of merged branch names
+get_merged_branches_individual() {
+    local branches_to_check="$1"
+    
+    # Validate input
+    if [ -z "$branches_to_check" ]; then
+        return 0
+    fi
+    
+    local merged_branches=""
+    for branch in $branches_to_check; do
+        # Check if there's a merged PR for this branch
+        local pr_state
+        pr_state=$(gh pr list --head "$branch" --state merged --json state --jq '.[0].state' 2>/dev/null || echo "")
+        
+        if [ "$pr_state" = "MERGED" ]; then
+            if [ -z "$merged_branches" ]; then
+                merged_branches="$branch"
+            else
+                merged_branches="$merged_branches
+$branch"
+            fi
+        fi
+    done
+    
+    echo "$merged_branches"
+    return 0
+}
+
+# ============================================================================
+# HELPER FUNCTIONS
+# ============================================================================
 
 print_header() {
     echo "${PURPLE}🚀 Pokehub Workflow Helper${NC}"
@@ -355,12 +454,29 @@ case "$1" in
         
         # Clean up local branches
         echo "${CYAN}🔍 Checking local branches...${NC}"
-        MERGED_BRANCHES=$(git branch --merged | grep -E "(feat/|fix/|chore/)" | grep -v "\*" | tr -d ' ')
+        
+        # Get ALL local feature branches (not just merged ones, since squash merges don't show as merged)
+        ALL_LOCAL_BRANCHES=$(git branch | grep -E "(feat/|fix/|chore/|docs/)" | grep -v "\*" | sed 's|^[[:space:]]*||' | tr -d ' ')
+        
+        # Check merged status using batched or individual API calls
+        MERGED_BRANCHES=""
+        if [ -n "$ALL_LOCAL_BRANCHES" ]; then
+            echo "${CYAN}Checking PR status for local branches...${NC}"
+            
+            # Try batched approach if jq is available
+            if gf_check_jq "warning" >/dev/null 2>&1; then
+                echo "${GREEN}🚀 Using batched GitHub API calls (faster)${NC}"
+                MERGED_BRANCHES=$(get_merged_branches_batched "$ALL_LOCAL_BRANCHES")
+            else
+                echo "${YELLOW}⚠️  Using individual API calls (slower - install jq for better performance)${NC}"
+                MERGED_BRANCHES=$(get_merged_branches_individual "$ALL_LOCAL_BRANCHES")
+            fi
+        fi
         
         if [ -n "$MERGED_BRANCHES" ]; then
             echo "${YELLOW}Deleting local merged branches:${NC}"
             echo "$MERGED_BRANCHES"
-            echo "$MERGED_BRANCHES" | xargs git branch -d
+            echo "$MERGED_BRANCHES" | xargs git branch -D
             echo "${GREEN}✅ Local cleanup complete${NC}"
         else
             echo "${YELLOW}No local merged branches to clean up${NC}"
@@ -372,8 +488,23 @@ case "$1" in
         # Fetch and prune to sync with remote
         gf_git_fetch origin
         
-        # Get remote branches that are merged into develop
-        REMOTE_MERGED_BRANCHES=$(git branch -r --merged origin/$DEVELOP_BRANCH | grep -E "origin/(feat/|fix/|chore/)" | sed 's|origin/||' | tr -d ' ')
+        # Get ALL remote feature branches (not just merged ones, since squash merges don't show as merged)
+        ALL_REMOTE_BRANCHES=$(git branch -r | grep -E "origin/(feat/|fix/|chore/|docs/)" | sed 's|origin/||' | sed 's|^[[:space:]]*||' | tr -d ' ')
+        
+        # Check merged status using batched or individual API calls
+        REMOTE_MERGED_BRANCHES=""
+        if [ -n "$ALL_REMOTE_BRANCHES" ]; then
+            echo "${CYAN}Checking PR status for remote branches...${NC}"
+            
+            # Try batched approach if jq is available
+            if gf_check_jq "warning" >/dev/null 2>&1; then
+                echo "${GREEN}🚀 Using batched GitHub API calls (faster)${NC}"
+                REMOTE_MERGED_BRANCHES=$(get_merged_branches_batched "$ALL_REMOTE_BRANCHES")
+            else
+                echo "${YELLOW}⚠️  Using individual API calls (slower - install jq for better performance)${NC}"
+                REMOTE_MERGED_BRANCHES=$(get_merged_branches_individual "$ALL_REMOTE_BRANCHES")
+            fi
+        fi
         
         if [ -n "$REMOTE_MERGED_BRANCHES" ]; then
             echo "${YELLOW}Found merged remote branches:${NC}"

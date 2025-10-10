@@ -1,0 +1,383 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main, release/* ]  # Run on main and release branches
+  pull_request:
+    branches: [ main, develop ]  # Run on all PRs
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  detect-branch-type:
+    runs-on: ubuntu-latest
+    name: Detect Branch Type
+    outputs:
+      branch-type: ${{ steps.detect.outputs.type }}
+      needs-lint: ${{ steps.detect.outputs.needs-lint }}
+      needs-test: ${{ steps.detect.outputs.needs-test }}
+      needs-install: ${{ steps.detect.outputs.needs-install }}
+      needs-docs: ${{ steps.detect.outputs.needs-docs }}
+      needs-external-reviews: ${{ steps.detect.outputs.needs-external-reviews }}
+    
+    steps:
+      - name: Detect branch type and requirements
+        id: detect
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          
+          # Default values
+          echo "type=unknown" >> $GITHUB_OUTPUT
+          echo "needs-lint=false" >> $GITHUB_OUTPUT
+          echo "needs-test=false" >> $GITHUB_OUTPUT
+          echo "needs-install=false" >> $GITHUB_OUTPUT
+          echo "needs-docs=false" >> $GITHUB_OUTPUT
+          echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+          
+          # Feature branches
+          if [[ "$BRANCH_NAME" =~ ^feat/ ]]; then
+            echo "type=feature" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Documentation branches
+          elif [[ "$BRANCH_NAME" =~ ^docs/ ]]; then
+            echo "type=documentation" >> $GITHUB_OUTPUT
+            echo "needs-lint=false" >> $GITHUB_OUTPUT
+            echo "needs-test=false" >> $GITHUB_OUTPUT
+            echo "needs-install=false" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # CI/CD branches
+          elif [[ "$BRANCH_NAME" =~ ^ci/ ]]; then
+            echo "type=ci" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Bug fix branches
+          elif [[ "$BRANCH_NAME" =~ ^fix/ ]]; then
+            echo "type=fix" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Maintenance branches
+          elif [[ "$BRANCH_NAME" =~ ^chore/ ]]; then
+            echo "type=chore" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=false" >> $GITHUB_OUTPUT
+            echo "needs-install=false" >> $GITHUB_OUTPUT
+            echo "needs-docs=false" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=false" >> $GITHUB_OUTPUT
+            
+          # Release branches
+          elif [[ "$BRANCH_NAME" =~ ^release/ ]]; then
+            echo "type=release" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
+            
+          # Default for unknown branches
+          else
+            echo "type=unknown" >> $GITHUB_OUTPUT
+            echo "needs-lint=true" >> $GITHUB_OUTPUT
+            echo "needs-test=true" >> $GITHUB_OUTPUT
+            echo "needs-install=true" >> $GITHUB_OUTPUT
+            echo "needs-docs=true" >> $GITHUB_OUTPUT
+            echo "needs-external-reviews=true" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "Detected branch type: ${{ steps.detect.outputs.type }}"
+          echo "Needs lint: ${{ steps.detect.outputs.needs-lint }}"
+          echo "Needs test: ${{ steps.detect.outputs.needs-test }}"
+          echo "Needs install: ${{ steps.detect.outputs.needs-install }}"
+          echo "Needs docs: ${{ steps.detect.outputs.needs-docs }}"
+          echo "Needs external reviews: ${{ steps.detect.outputs.needs-external-reviews }}"
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Shell Scripts
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-lint == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+      with:
+        scandir: './bin'
+        additional_files: './lib ./install.sh ./dev-setup.sh'
+        severity: warning
+        
+  test:
+    runs-on: ubuntu-latest
+    name: Test Toolkit
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-test == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up environment
+      run: |
+        export DT_ROOT="${GITHUB_WORKSPACE}"
+        export PATH="${DT_ROOT}/bin:$PATH"
+        echo "DT_ROOT=${DT_ROOT}" >> $GITHUB_ENV
+        echo "${DT_ROOT}/bin" >> $GITHUB_PATH
+        
+    - name: Install dependencies
+      run: |
+        # GitHub CLI is pre-installed on GitHub Actions runners
+        gh --version
+        git --version
+        
+    - name: Test script syntax
+      run: |
+        echo "Testing bash syntax..."
+        bash -n lib/core/github-utils.sh
+        bash -n lib/git-flow/utils.sh
+        bash -n lib/git-flow/safety.sh
+        bash -n lib/sourcery/parser.sh
+        bash -n bin/dt-config
+        bash -n bin/dt-git-safety
+        bash -n bin/dt-sourcery-parse
+        bash -n install.sh
+        bash -n dev-setup.sh
+        echo "✅ All scripts have valid syntax"
+        
+    - name: Test configuration
+      run: |
+        source lib/core/github-utils.sh
+        source lib/git-flow/utils.sh
+        
+        # Test auto-detection
+        gh_detect_project_info
+        echo "Detected project: ${PROJECT_NAME}"
+        echo "Detected repo: ${PROJECT_REPO}"
+        
+        # Test configuration
+        gf_show_config
+        
+    - name: Test commands
+      run: |
+        # Test dt-config
+        ./bin/dt-config show
+        
+        # Test dt-git-safety (will run checks)
+        ./bin/dt-git-safety check || echo "Safety checks completed"
+        
+    - name: Verify executables
+      run: |
+        test -x bin/dt-config || exit 1
+        test -x bin/dt-git-safety || exit 1
+        test -x bin/dt-sourcery-parse || exit 1
+        test -x lib/core/github-utils.sh || exit 1
+        test -x lib/git-flow/utils.sh || exit 1
+        test -x lib/git-flow/safety.sh || exit 1
+        test -x lib/sourcery/parser.sh || exit 1
+        test -x install.sh || exit 1
+        test -x dev-setup.sh || exit 1
+        echo "✅ All executables have correct permissions"
+        
+  install:
+    runs-on: ubuntu-latest
+    name: Test Installation
+    needs: [detect-branch-type, lint, test]
+    if: needs.detect-branch-type.outputs.needs-install == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Test global installation
+      run: |
+        set -euo pipefail
+        ./install.sh --no-symlinks
+        echo "✅ Global installation completed"
+        
+    - name: Test local installation
+      run: |
+        set -euo pipefail
+        # Test local installation in a separate directory
+        LOCAL_TEST_DIR=$(mktemp -d)
+        cd "$LOCAL_TEST_DIR"
+        
+        # Copy the toolkit to test directory
+        cp -r "${GITHUB_WORKSPACE}" ./dev-toolkit
+        cd ./dev-toolkit
+        
+        # Test local installation
+        ./install.sh --local
+        echo "✅ Local installation completed"
+        
+        # Verify local installation works (local install doesn't create .dev-toolkit dir)
+        # Instead, it makes the toolkit available in the current directory
+        if [ -f "bin/dt-config" ] && [ -f "bin/dt-git-safety" ]; then
+          echo "✅ Local installation successful - commands available"
+        else
+          echo "❌ Local installation failed - commands not found"
+          exit 1
+        fi
+        
+        # Clean up
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$LOCAL_TEST_DIR"
+        
+    - name: Set up environment for installed commands
+      run: |
+        set -euo pipefail
+        export DT_ROOT="${GITHUB_WORKSPACE}"
+        export PATH="$DT_ROOT/bin:$PATH"
+        echo "DT_ROOT=$DT_ROOT" >> $GITHUB_ENV
+        echo "$DT_ROOT/bin" >> $GITHUB_PATH
+        
+    - name: Verify command accessibility
+      run: |
+        set -euo pipefail
+        which dt-config
+        which dt-git-safety
+        which dt-sourcery-parse
+        echo "✅ All commands accessible"
+        
+    - name: Test command functionality
+      run: |
+        set -euo pipefail
+        # Test help flags
+        dt-config --help
+        dt-git-safety --help
+        dt-sourcery-parse --help
+        
+        # Test actual functionality beyond help
+        dt-config show
+        dt-git-safety check || echo "Safety checks completed (expected)"
+        
+        echo "✅ All commands functional"
+        
+    - name: Test integration scenarios
+      run: |
+        set -euo pipefail
+        # Test installation → usage workflow
+        
+        # Create a test repository for integration testing
+        TEST_REPO_DIR=$(mktemp -d)
+        cd "$TEST_REPO_DIR"
+        git init
+        git config user.email "test@example.com"
+        git config user.name "Test User"
+        echo "# Test Repo" > README.md
+        git add README.md
+        git commit -m "Initial commit"
+        
+        # Test dt-git-safety in a real git repository
+        dt-git-safety check || echo "Safety checks completed (expected)"
+        
+        # Test dt-config help (doesn't require external services)
+        dt-config --help
+        
+        # Clean up
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$TEST_REPO_DIR"
+        
+        echo "✅ Integration scenarios tested"
+        
+    - name: Test edge cases
+      run: |
+        set -euo pipefail
+        # Test edge cases and error conditions
+        
+        # Test installation in non-git directory (should work)
+        NON_GIT_DIR=$(mktemp -d)
+        cd "$NON_GIT_DIR"
+        cp -r "${GITHUB_WORKSPACE}" ./dev-toolkit
+        cd ./dev-toolkit
+        ./install.sh --no-symlinks
+        echo "✅ Installation works in non-git directory"
+        
+        # Test re-installation (should handle gracefully)
+        ./install.sh --no-symlinks
+        echo "✅ Re-installation handled gracefully"
+        
+        # Test with existing bin directory (edge case)
+        mkdir -p bin
+        ./install.sh --local
+        echo "✅ Local installation with existing bin directory handled"
+        
+        # Clean up
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$NON_GIT_DIR"
+        
+        echo "✅ Edge cases tested"
+        
+    - name: Verify installation isolation
+      run: |
+        set -euo pipefail
+        # Verify that installations don't interfere with each other
+        
+        # Test that global and local installations are isolated
+        if [ -d ~/.dev-toolkit ]; then
+          echo "✅ Global installation directory exists"
+        else
+          echo "❌ Global installation directory missing"
+          exit 1
+        fi
+        
+        # Verify commands still work after all tests
+        which dt-config
+        which dt-git-safety
+        which dt-sourcery-parse
+        
+        # Test that commands work in different contexts
+        TEMP_DIR=$(mktemp -d)
+        cd "$TEMP_DIR"
+        dt-config --help
+        cd "$GITHUB_WORKSPACE"
+        rm -rf "$TEMP_DIR"
+        
+        echo "✅ Installation isolation verified"
+        
+    - name: Cleanup
+      run: |
+        rm -rf ~/.dev-toolkit
+        echo "✅ Cleanup completed"
+        
+  docs:
+    runs-on: ubuntu-latest
+    name: Check Documentation
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-docs == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check for broken links
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-quiet-mode: 'yes'
+        config-file: '.github/markdown-link-check-config.json'
+        
+    - name: Verify documentation exists
+      run: |
+        test -f README.md || exit 1
+        test -f CHANGELOG.md || exit 1
+        test -f QUICK-START.md || exit 1
+        test -f docs/SIMPLE-EXPLANATION.md || exit 1
+        test -f docs/INSTALL-VS-DEV-SETUP.md || exit 1
+        test -f docs/troubleshooting/common-issues.md || exit 1
+        echo "✅ All documentation files exist"

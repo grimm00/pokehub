@@ -189,6 +189,52 @@ jobs:
           path: template-validation-results/
           if-no-files-found: ignore
 
+  comprehensive-validation:
+    runs-on: ubuntu-latest
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-test == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run comprehensive validation
+        run: |
+          chmod +x scripts/validate-all.sh
+          mkdir -p validation-results
+          ./scripts/validate-all.sh > validation-results/comprehensive-validation.txt 2>&1
+          echo "Comprehensive validation exit code: $?" >> validation-results/comprehensive-validation.txt
+
+      - name: Upload validation results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: comprehensive-validation-results
+          path: validation-results/
+          if-no-files-found: ignore
+
+  project-index-generation:
+    runs-on: ubuntu-latest
+    needs: [detect-branch-type]
+    if: needs.detect-branch-type.outputs.needs-test == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate project index
+        run: |
+          chmod +x scripts/generate-project-index.sh
+          ./scripts/generate-project-index.sh
+
+      - name: Upload project index
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: project-index
+          path: project-index/
+          if-no-files-found: ignore
+
   test:
     runs-on: ubuntu-latest
     needs: [detect-branch-type]

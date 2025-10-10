@@ -177,16 +177,16 @@ jobs:
       - name: Run template validation
         run: |
           chmod +x scripts/validate-templates.sh
-          ./scripts/validate-templates.sh
+          mkdir -p template-validation-results
+          ./scripts/validate-templates.sh > template-validation-results/validation-output.txt 2>&1
+          echo "Template validation exit code: $?" >> template-validation-results/validation-output.txt
 
       - name: Upload validation results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: template-validation-results
-          path: |
-            scripts/validate-templates.sh
-            admin/planning/notes/opportunities/external/administration/templates/
+          path: template-validation-results/
           if-no-files-found: ignore
 
   test:

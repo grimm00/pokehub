@@ -64,6 +64,9 @@ frontend/build/
 # IDE files
 .vscode/
 .idea/
+.cursor/cache/
+.cursor/logs/
+.cursor/settings/
 *.swp
 *.swo
 *~

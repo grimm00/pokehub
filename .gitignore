@@ -125,3 +125,7 @@ pnpm-lock.yaml
 .vercel
 .netlify
 .serverless/
+
+# Generated artifacts
+validation-results/
+project-index/

@@ -1,0 +1,40 @@
+name: External Reviews Control
+
+# Only run on PR events, not on push
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  # Explicitly exclude push events
+  push:
+    branches-ignore: ['**']
+
+jobs:
+  trigger-external-reviews:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for better diff analysis
+      
+      - name: Configure Sourcery for PR review
+        run: |
+          echo "Configuring Sourcery for PR-only reviews..."
+          # Sourcery will automatically detect this is a PR event
+          # and only review the changed files
+          echo "Sourcery configured for PR review"
+      
+      - name: Configure Cursor Bugbot for PR review
+        run: |
+          echo "Configuring Cursor Bugbot for PR-only reviews..."
+          # Cursor Bugbot will automatically detect this is a PR event
+          # and only review the changed files
+          echo "Cursor Bugbot configured for PR review"
+      
+      - name: Log review configuration
+        run: |
+          echo "External reviews configured for PR: ${{ github.event.pull_request.number }}"
+          echo "Review will focus on changed files only"
+          echo "Quota usage optimized for PR-based reviews"

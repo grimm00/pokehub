@@ -1,0 +1,47 @@
+# Cursor Bugbot Configuration for Pokehub
+# Configure Cursor Bugbot to only review on PR creation, not during development
+
+# GitHub integration settings
+github:
+  # Only run on PR events, not on push
+  events:
+    - pull_request.opened
+    - pull_request.synchronize
+    - pull_request.reopened
+  
+  # Skip on push events to branches
+  skip_on_push: true
+  
+  # Only review on PR creation
+  trigger_on_pr_only: true
+
+# Review settings
+review:
+  # Only review changed files
+  review_changed_files_only: true
+  
+  # Skip documentation files
+  skip_patterns:
+    - "admin/**"
+    - "docs/**"
+    - "**/*.md"
+    - "**/chat-logs/**"
+    - "**/planning/**"
+    - "**/feedback/**"
+  
+  # Focus on code files
+  include_patterns:
+    - "backend/**/*.py"
+    - "frontend/src/**/*.{ts,tsx,js,jsx}"
+    - "scripts/**/*.sh"
+    - "tests/**/*.{py,bats}"
+    - ".github/workflows/*.yml"
+
+# Quota management
+quota:
+  # Limit reviews to conserve quota
+  max_reviews_per_day: 10
+  max_reviews_per_pr: 3
+  
+  # Skip reviews if quota is low
+  skip_on_low_quota: true

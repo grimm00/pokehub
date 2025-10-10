@@ -3,8 +3,8 @@
 # Project Index Generation Script
 # Automatically generates comprehensive project documentation index
 
-# Temporarily disable strict mode for CI debugging
-# set -euo pipefail
+# Enable strict mode for better error handling
+set -euo pipefail
 
 # Colors for output
 RED='\033[0;31m'
@@ -76,6 +76,57 @@ else
     # Linux sed
     sed -i "s/\[TIMESTAMP\]/$TIMESTAMP/g" "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md"
 fi
+
+# Add project sections to main index
+cat >> "$INDEX_OUTPUT_DIR/PROJECT-INDEX.md" << 'EOF'
+
+## Frontend Projects
+
+See [frontend-projects.md](frontend-projects.md) for detailed frontend project information.
+
+## Backend Projects
+
+See [backend-projects.md](backend-projects.md) for detailed backend project information.
+
+## Main/Cross-cutting Projects
+
+See [main-projects.md](main-projects.md) for detailed main/cross-cutting project information.
+
+## Feature Projects
+
+Projects focused on new features and functionality.
+
+## CI/CD Projects
+
+See [ci-projects.md](ci-projects.md) for detailed CI/CD project information.
+
+## Release Projects
+
+Projects focused on releases and deployment.
+
+## Phase Projects
+
+Projects organized by development phases.
+
+## Active Projects
+
+Currently active development projects.
+
+## Completed Projects
+
+Successfully completed projects.
+
+## Planned Projects
+
+Projects planned for future development.
+
+---
+
+## 📊 Project Statistics
+
+See [project-statistics.md](project-statistics.md) for detailed project statistics and metrics.
+
+EOF
 
 # 2. Generate Area-Specific Indexes
 generate_area_index() {

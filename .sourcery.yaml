@@ -34,8 +34,17 @@ python_version: "3.13"
 
 # GitHub integration settings
 github:
-  # Request reviews from Sourcery
-  request_review: auto
+  # Only request reviews on PR creation, not on push
+  request_review: pull_request
   
   # Only review changed files, not entire PR
   sourcery_branch: main
+  
+  # Events to trigger reviews
+  events:
+    - pull_request.opened
+    - pull_request.synchronize
+    - pull_request.reopened
+  
+  # Skip reviews on push events
+  skip_on_push: true

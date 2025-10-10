@@ -129,7 +129,7 @@ for area in "${AREAS[@]}"; do
         project_count=0
         for project_dir in "admin/planning/features/$area"/*/; do
             if [ -d "$project_dir" ]; then
-                ((project_count++))
+                project_count=$((project_count + 1))
                 project_name=$(basename "$project_dir")
                 if [ -f "$project_dir/README.md" ]; then
                     log_success "  ✓ Project: $project_name (has README.md)"
@@ -163,7 +163,7 @@ BROKEN_LINK_PATTERNS=(
 )
 
 for pattern in "${BROKEN_LINK_PATTERNS[@]}"; do
-    if grep -r "$pattern" admin/planning/ --include="*.md" >/dev/null 2>&1; then
+    if timeout 10 grep -r "$pattern" admin/planning/ --include="*.md" >/dev/null 2>&1; then
         log_info "Found potential links matching pattern: $pattern"
         # Could add more sophisticated link checking here
     fi

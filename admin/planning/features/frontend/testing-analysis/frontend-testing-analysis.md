@@ -271,6 +271,10 @@ src/__tests__/
 - [Bats Testing Results](../../../testing/results/backend-testing-results-2024-12-19.md)
 - [Testing Framework](../../../testing/README.md)
 
+### **Comprehensive Testing Review:**
+- [Comprehensive Testing Review Plan](../../main/comprehensive-testing-review/comprehensive-testing-review-plan.md)
+- This frontend testing analysis is **Phase 1** of the comprehensive testing review
+
 ### **Project Roadmap:**
 - [Main Roadmap](../../roadmap.md)
 - [Phase 3 Status](../../roadmap.md#phase-3-frontend-development-week-5-6)

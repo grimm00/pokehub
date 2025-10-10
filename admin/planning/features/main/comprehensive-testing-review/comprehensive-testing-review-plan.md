@@ -101,21 +101,28 @@ Testing Architecture
 
 ## 🚀 **Implementation Plan**
 
-### **Phase 1: Testing Architecture Optimization (2 hours)**
+### **Phase 1: Frontend Testing Cleanup & Architecture Optimization (2 hours)**
 
-#### **1.1 Unified Test Configuration**
+#### **1.1 Frontend Test Issues Resolution**
+- **Fix API mocking issues** (baseURL configuration, environment variables)
+- **Resolve act warnings** (wrap async operations in act())
+- **Consolidate test directories** (remove duplication between frontend/src/__tests__/ and tests/unit/frontend/)
+- **Update Bats integration** to use current test directory
+- **Complete missing component tests** (PokemonModal, PokemonList, GenerationFilter, etc.)
+
+#### **1.2 Unified Test Configuration**
 - **Create centralized test configuration**
 - **Standardize test patterns** across frontend/backend
 - **Implement consistent mocking strategies**
 - **Set up shared test utilities**
 
-#### **1.2 Test Performance Optimization**
+#### **1.3 Test Performance Optimization**
 - **Parallel test execution** setup
 - **Test caching** implementation
 - **Selective test running** (changed files only)
 - **Test result caching**
 
-#### **1.3 Test Coverage Reporting**
+#### **1.4 Test Coverage Reporting**
 - **Unified coverage reporting** across all layers
 - **Coverage thresholds** enforcement
 - **Coverage visualization** setup
@@ -306,8 +313,8 @@ testing/
 ## 📚 **Related Documents**
 
 ### **Current Testing:**
-- [Frontend Testing Analysis](../frontend/testing/frontend-testing-analysis.md)
-- [Frontend Test Duplication Analysis](../frontend/testing/frontend-test-duplication-analysis.md)
+- [Frontend Testing Analysis](../frontend/testing-analysis/frontend-testing-analysis.md) - **Phase 1 Implementation Plan**
+- [Frontend Test Duplication Analysis](../frontend/testing-analysis/frontend-test-duplication-analysis.md)
 - [Bats Testing Framework](../../../testing/README.md)
 - [Backend Testing Strategy](../../../testing/strategies/backend-testing-strategy.md)
 

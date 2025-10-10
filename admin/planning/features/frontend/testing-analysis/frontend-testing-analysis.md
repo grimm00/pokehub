@@ -273,7 +273,7 @@ src/__tests__/
 
 ### **Comprehensive Testing Review:**
 - [Comprehensive Testing Review Plan](../../main/comprehensive-testing-review/comprehensive-testing-review-plan.md)
-- [Phase 1 Implementation Plan](./phase-1-frontend-testing-cleanup.md) - **Detailed implementation tasks**
+- [Phase 1 Implementation Plan](./phase1.md) - **Detailed implementation tasks**
 - This frontend testing analysis is **Phase 1** of the comprehensive testing review
 
 ### **Project Roadmap:**

@@ -314,7 +314,7 @@ testing/
 
 ### **Current Testing:**
 - [Frontend Testing Analysis](../frontend/testing-analysis/frontend-testing-analysis.md) - **Analysis and Strategy**
-- [Phase 1 Implementation Plan](../frontend/testing-analysis/phase-1-frontend-testing-cleanup.md) - **Detailed Implementation Tasks**
+- [Phase 1 Implementation Plan](../frontend/testing-analysis/phase1.md) - **Detailed Implementation Tasks**
 - [Frontend Test Duplication Analysis](../frontend/testing-analysis/frontend-test-duplication-analysis.md)
 - [Bats Testing Framework](../../../testing/README.md)
 - [Backend Testing Strategy](../../../testing/strategies/backend-testing-strategy.md)

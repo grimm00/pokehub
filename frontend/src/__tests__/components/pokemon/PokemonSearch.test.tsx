@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, fireEventWithAct } from '@/__tests__/test-utils/custom-render'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { PokemonSearchMemo as PokemonSearch } from '@/components/pokemon/PokemonSearch'
 
@@ -38,9 +38,7 @@ describe('PokemonSearch', () => {
 
     const searchInput = screen.getByPlaceholderText('Enter Pokemon name...')
 
-    await act(async () => {
-      fireEvent.change(searchInput, { target: { value: 'char' } })
-    })
+    await fireEventWithAct(fireEvent, searchInput, { target: { value: 'char' } })
 
     await waitFor(() => {
       expect(mockOnSearch).toHaveBeenCalledWith('char', 'all', 'id')
@@ -60,9 +58,7 @@ describe('PokemonSearch', () => {
 
     const typeFilter = screen.getByLabelText('Filter by type')
 
-    await act(async () => {
-      fireEvent.change(typeFilter, { target: { value: 'fire' } })
-    })
+    await fireEventWithAct(fireEvent, typeFilter, { target: { value: 'fire' } })
 
     // Wait for the debounced effect to trigger (300ms + buffer)
     await waitFor(() => {
@@ -113,9 +109,7 @@ describe('PokemonSearch', () => {
     const searchInput = screen.getByPlaceholderText('Enter Pokemon name...')
 
     // Trigger search input change
-    await act(async () => {
-      fireEvent.change(searchInput, { target: { value: 'test' } })
-    })
+    await fireEventWithAct(fireEvent, searchInput, { target: { value: 'test' } })
 
     // The spinner should be visible immediately after input change
     const spinner = document.querySelector('.animate-spin')
@@ -127,9 +121,7 @@ describe('PokemonSearch', () => {
 
     const sortSelect = screen.getByLabelText('Sort by')
 
-    await act(async () => {
-      fireEvent.change(sortSelect, { target: { value: 'name' } })
-    })
+    await fireEventWithAct(fireEvent, sortSelect, { target: { value: 'name' } })
 
     await waitFor(() => {
       expect(mockOnSearch).toHaveBeenCalledWith('', 'all', 'name')

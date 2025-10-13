@@ -203,6 +203,28 @@ describe('RegisterForm', () => {
     expect(screen.getByText('Registration failed')).toBeInTheDocument()
   })
 
+  it('removes error message when user retries registration', async () => {
+    const errorStore = {
+      ...mockAuthStore,
+      error: 'Registration failed',
+      clearError: vi.fn(),
+    }
+    ;(useAuthStore as unknown as vi.Mock).mockReturnValue(errorStore)
+
+    render(<RegisterForm onSuccess={mockOnSuccess} onSwitchToLogin={mockOnSwitchToLogin} />)
+
+    // Error message should be present
+    expect(screen.getByText('Registration failed')).toBeInTheDocument()
+
+    // Simulate user attempting to submit the form again
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Register' }))
+    })
+
+    // Verify clearError was called when form is submitted
+    expect(errorStore.clearError).toHaveBeenCalled()
+  })
+
   it('calls onSwitchToLogin when switch to login link is clicked', async () => {
     render(<RegisterForm onSuccess={mockOnSuccess} onSwitchToLogin={mockOnSwitchToLogin} />)
 

@@ -59,17 +59,28 @@ import userEvent from '@testing-library/user-event'
 await userEventWithAct(userEvent, button, () => userEvent.click(button))
 ```
 
-### Fire Events with Act()
+### Event Handling
 
-For fireEvent operations that trigger async operations:
+For event handling in tests, use React Testing Library's `fireEvent` wrapped in `act()` directly:
 
 ```typescript
-import { fireEventWithAct } from '@/__tests__/test-utils/custom-render'
+import { act } from 'react'
 import { fireEvent } from '@testing-library/react'
 
-// Wrap fireEvent operations that trigger async operations
-await fireEventWithAct(fireEvent, input, { target: { value: 'test' } })
+await act(async () => {
+  fireEvent.click(button)
+})
 ```
+
+This pattern is clearer and more maintainable than using a helper function.
+
+### Why No Helper Function?
+
+We previously attempted a `fireEventWithAct` helper, but it had fundamental design flaws. Direct `act()` usage is:
+- More explicit and clear
+- Better aligned with React Testing Library patterns
+- Easier to debug
+- Less prone to errors
 
 ## Best Practices
 
@@ -99,8 +110,10 @@ To update existing tests to use the new utilities:
      fireEvent.change(input, { target: { value: 'test' } })
    })
    
-   // New
-   await fireEventWithAct(fireEvent, input, { target: { value: 'test' } })
+   // New (direct act() usage is preferred)
+   await act(async () => {
+     fireEvent.change(input, { target: { value: 'test' } })
+   })
    ```
 
 3. **Use shared mock data:**
@@ -112,6 +125,37 @@ To update existing tests to use the new utilities:
    import { mockPokemon } from '@/__tests__/test-utils/test-helpers'
    ```
 
+## Integration Testing with MSW
+
+### Mock Service Worker Setup
+
+We use Mock Service Worker (MSW) for API mocking in integration tests:
+
+- **Server Setup**: `src/__tests__/setup/msw-server.ts`
+- **Handlers**: Define mock API responses for all endpoints
+- **Automatic**: MSW starts before tests, resets after each test
+
+### Writing Integration Tests
+
+```typescript
+import { server } from '../setup/msw-server'
+import { http, HttpResponse } from 'msw'
+
+// Override handler for specific test
+server.use(
+  http.get('/api/v1/pokemon', () => {
+    return HttpResponse.json({ pokemon: [...] })
+  })
+)
+```
+
+### Best Practices
+
+1. Use MSW for API integration tests
+2. Override handlers per-test as needed
+3. Test both success and error scenarios
+4. Verify loading states and error handling
+
 ## Benefits
 
 - **Reduced boilerplate** - Less repetitive code in tests
@@ -119,3 +163,4 @@ To update existing tests to use the new utilities:
 - **Shared mock data** - Consistent test data across components
 - **Better maintainability** - Centralized test utilities
 - **Improved readability** - Clear intent with helper functions
+- **API mocking** - MSW for integration testing

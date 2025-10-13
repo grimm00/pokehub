@@ -3,7 +3,7 @@ import { render, RenderOptions } from '@testing-library/react'
 import { act } from '@testing-library/react'
 
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  // Add custom options here if needed in the future
+    // Add custom options here if needed in the future
 }
 
 /**
@@ -11,12 +11,12 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
  * Use this instead of the default render from @testing-library/react
  */
 export function customRender(
-  ui: React.ReactElement,
-  options: CustomRenderOptions = {}
+    ui: React.ReactElement,
+    options: CustomRenderOptions = {}
 ) {
-  return render(ui, {
-    ...options,
-  })
+    return render(ui, {
+        ...options,
+    })
 }
 
 /**
@@ -24,14 +24,14 @@ export function customRender(
  * Use this when you need to handle async state updates
  */
 export async function renderWithAct(
-  ui: React.ReactElement,
-  options: CustomRenderOptions = {}
+    ui: React.ReactElement,
+    options: CustomRenderOptions = {}
 ) {
-  let result: any
-  await act(async () => {
-    result = customRender(ui, options)
-  })
-  return result
+    let result: any
+    await act(async () => {
+        result = customRender(ui, options)
+    })
+    return result
 }
 
 /**
@@ -39,13 +39,13 @@ export async function renderWithAct(
  * Use this when simulating user events that trigger async operations
  */
 export async function userEventWithAct(
-  userEvent: any,
-  element: HTMLElement,
-  action: () => Promise<void>
+    userEvent: any,
+    element: HTMLElement,
+    action: () => Promise<void>
 ) {
-  await act(async () => {
-    await action()
-  })
+    await act(async () => {
+        await action()
+    })
 }
 
 /**
@@ -53,13 +53,13 @@ export async function userEventWithAct(
  * Use this when using fireEvent for async operations
  */
 export async function fireEventWithAct(
-  fireEvent: any,
-  element: HTMLElement,
-  event: any
+    fireEvent: any,
+    element: HTMLElement,
+    event: any
 ) {
-  await act(async () => {
-    fireEvent(element, event)
-  })
+    await act(async () => {
+        fireEvent(element, event)
+    })
 }
 
 // Re-export everything from testing-library for convenience

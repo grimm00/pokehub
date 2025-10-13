@@ -161,14 +161,25 @@ afterAll(() => server.close())
 
 ---
 
-### **Task 4: Address PR52 Feedback (Optional - 30 min)**
+### **Task 4: Address PR52 & PR53 Feedback (30-45 min)**
 
-**Goal:** Address medium/low priority feedback from PR52
+**Goal:** Address feedback from PR52 and PR53 reviews
 
 **Items to Address:**
-- [ ] **Add error message auto-dismissal test** (MEDIUM priority, LOW effort)
+
+**HIGH Priority (PR53 Bugbot):**
+- [ ] **Remove fireEventWithAct helper bug** (HIGH priority, LOW effort)
+  - Remove fireEventWithAct from custom-render.tsx
+  - Verify all tests still pass
+  - Update test-utils README
+
+**MEDIUM Priority (PR52 & PR53 Sourcery):**
+- [ ] **Add error message auto-dismissal test** (PR52) (MEDIUM priority, LOW effort)
+- [ ] **Add unauthenticated favorite click assertion** (PR53) (MEDIUM priority, LOW effort)
+
+**LOW Priority (PR53 Sourcery):**
+- [ ] **Refactor grid className test** (LOW priority, LOW effort)
 - [ ] **Cleanup run-frontend-tests.sh** (LOW priority, LOW effort)
-- [ ] **Improve test organization** (LOW priority, LOW effort)
 
 **Implementation:**
 ```typescript

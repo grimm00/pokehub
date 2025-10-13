@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { GenerationFilter } from '@/components/pokemon/GenerationFilter'
+import GenerationFilter from '@/components/pokemon/GenerationFilter'
 
 const mockGenerations = [
   {
@@ -58,9 +58,10 @@ describe('GenerationFilter', () => {
         isLoading={true}
       />
     )
-    
-    expect(screen.getByText('Loading generations...')).toBeInTheDocument()
+
+    expect(screen.getByText('Filter by Generation:')).toBeInTheDocument()
     expect(document.querySelector('.animate-pulse')).toBeInTheDocument()
+    expect(document.querySelectorAll('.generation-chip-skeleton')).toHaveLength(3)
   })
 
   it('renders generation filter with all option', () => {
@@ -72,9 +73,9 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    expect(screen.getByLabelText('Filter by generation')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('All Generations')).toBeInTheDocument()
+
+    expect(screen.getByText('Filter by Generation:')).toBeInTheDocument()
+    expect(screen.getByText('All Generations')).toBeInTheDocument()
   })
 
   it('renders all generation options', () => {
@@ -86,15 +87,18 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    const select = screen.getByLabelText('Filter by generation')
-    expect(select).toBeInTheDocument()
-    
-    // Check that all generations are available as options
+
+    // Check that all generation buttons are rendered
     expect(screen.getByText('All Generations')).toBeInTheDocument()
-    expect(screen.getByText('Generation I (Kanto) - 151 Pokemon')).toBeInTheDocument()
-    expect(screen.getByText('Generation II (Johto) - 100 Pokemon')).toBeInTheDocument()
-    expect(screen.getByText('Generation III (Hoenn) - 135 Pokemon')).toBeInTheDocument()
+    expect(screen.getByText('Gen 1')).toBeInTheDocument()
+    expect(screen.getByText('Generation I')).toBeInTheDocument()
+    expect(screen.getByText('151')).toBeInTheDocument()
+    expect(screen.getByText('Gen 2')).toBeInTheDocument()
+    expect(screen.getByText('Generation II')).toBeInTheDocument()
+    expect(screen.getByText('100')).toBeInTheDocument()
+    expect(screen.getByText('Gen 3')).toBeInTheDocument()
+    expect(screen.getByText('Generation III')).toBeInTheDocument()
+    expect(screen.getByText('135')).toBeInTheDocument()
   })
 
   it('calls onGenerationChange when selection changes', () => {
@@ -106,26 +110,26 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    const select = screen.getByLabelText('Filter by generation')
-    fireEvent.change(select, { target: { value: '1' } })
-    
+
+    const gen1Button = screen.getByRole('button', { name: /gen 1/i })
+    fireEvent.click(gen1Button)
+
     expect(mockOnGenerationChange).toHaveBeenCalledWith(1)
   })
 
   it('calls onGenerationChange with "all" when All Generations is selected', () => {
     render(
       <GenerationFilter
-        selectedGeneration="all"
+        selectedGeneration={1}
         onGenerationChange={mockOnGenerationChange}
         generations={mockGenerations}
         isLoading={false}
       />
     )
-    
-    const select = screen.getByLabelText('Filter by generation')
-    fireEvent.change(select, { target: { value: 'all' } })
-    
+
+    const allButton = screen.getByRole('button', { name: /all generations/i })
+    fireEvent.click(allButton)
+
     expect(mockOnGenerationChange).toHaveBeenCalledWith('all')
   })
 
@@ -138,9 +142,14 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    const select = screen.getByLabelText('Filter by generation')
-    expect(select).toHaveValue('2')
+
+    // Check that the correct button is active
+    const gen2Button = screen.getByRole('button', { name: /gen 2/i })
+    expect(gen2Button).toHaveClass('active')
+
+    // Check that generation info is displayed
+    expect(screen.getByText('Generation II Region (Gen 2)')).toBeInTheDocument()
+    expect(screen.getByText('1999 • 100 Pokemon • Gold, Silver, Crystal')).toBeInTheDocument()
   })
 
   it('handles empty generations array', () => {
@@ -152,9 +161,13 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    expect(screen.getByLabelText('Filter by generation')).toBeInTheDocument()
+
+    expect(screen.getByText('Filter by Generation:')).toBeInTheDocument()
     expect(screen.getByText('All Generations')).toBeInTheDocument()
+
+    // Should only have the "All Generations" button
+    const buttons = screen.getAllByRole('button')
+    expect(buttons).toHaveLength(1)
   })
 
   it('displays generation information correctly', () => {
@@ -166,11 +179,17 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
+
     // Check that generation details are displayed correctly
-    expect(screen.getByText('Generation I (Kanto) - 151 Pokemon')).toBeInTheDocument()
-    expect(screen.getByText('Generation II (Johto) - 100 Pokemon')).toBeInTheDocument()
-    expect(screen.getByText('Generation III (Hoenn) - 135 Pokemon')).toBeInTheDocument()
+    expect(screen.getByText('Gen 1')).toBeInTheDocument()
+    expect(screen.getByText('Generation I')).toBeInTheDocument()
+    expect(screen.getByText('151')).toBeInTheDocument()
+    expect(screen.getByText('Gen 2')).toBeInTheDocument()
+    expect(screen.getByText('Generation II')).toBeInTheDocument()
+    expect(screen.getByText('100')).toBeInTheDocument()
+    expect(screen.getByText('Gen 3')).toBeInTheDocument()
+    expect(screen.getByText('Generation III')).toBeInTheDocument()
+    expect(screen.getByText('135')).toBeInTheDocument()
   })
 
   it('handles generation with different pokemon counts', () => {
@@ -186,7 +205,7 @@ describe('GenerationFilter', () => {
         expected_count: 100,
       },
     ]
-    
+
     render(
       <GenerationFilter
         selectedGeneration="all"
@@ -195,9 +214,13 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    expect(screen.getByText('Generation I (Kanto) - 50 Pokemon')).toBeInTheDocument()
-    expect(screen.getByText('Generation II (Johto) - 100 Pokemon')).toBeInTheDocument()
+
+    expect(screen.getByText('Gen 1')).toBeInTheDocument()
+    expect(screen.getByText('Generation I')).toBeInTheDocument()
+    expect(screen.getByText('50')).toBeInTheDocument()
+    expect(screen.getByText('Gen 2')).toBeInTheDocument()
+    expect(screen.getByText('Generation II')).toBeInTheDocument()
+    expect(screen.getByText('100')).toBeInTheDocument()
   })
 
   it('has correct accessibility attributes', () => {
@@ -209,10 +232,14 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    const select = screen.getByLabelText('Filter by generation')
-    expect(select).toHaveAttribute('id', 'generation-filter')
-    expect(select).toHaveAttribute('name', 'generation')
+
+    // Check that buttons have proper accessibility attributes
+    const allButton = screen.getByRole('button', { name: /all generations/i })
+    expect(allButton).toBeInTheDocument()
+
+    const gen1Button = screen.getByRole('button', { name: /gen 1/i })
+    expect(gen1Button).toBeInTheDocument()
+    expect(gen1Button).toHaveAttribute('title', 'The original 151 Pokemon (1996)')
   })
 
   it('applies correct CSS classes', () => {
@@ -224,8 +251,13 @@ describe('GenerationFilter', () => {
         isLoading={false}
       />
     )
-    
-    const select = screen.getByLabelText('Filter by generation')
-    expect(select).toHaveClass('w-full', 'p-2', 'border', 'border-gray-300', 'rounded-md')
+
+    // Check that the container has correct classes
+    const container = document.querySelector('.generation-filter')
+    expect(container).toBeInTheDocument()
+
+    // Check that the active button has correct classes
+    const allButton = screen.getByRole('button', { name: /all generations/i })
+    expect(allButton).toHaveClass('generation-chip', 'active')
   })
 })

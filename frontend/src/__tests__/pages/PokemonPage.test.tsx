@@ -157,10 +157,10 @@ describe('PokemonPage', () => {
 
         await waitFor(() => {
             expect(screen.getAllByText((content, element) => {
-                return element?.textContent?.includes('Showing') && 
-                       element?.textContent?.includes('2') && 
-                       element?.textContent?.includes('of') && 
-                       element?.textContent?.includes('Pokemon') || false
+                return element?.textContent?.includes('Showing') &&
+                    element?.textContent?.includes('2') &&
+                    element?.textContent?.includes('of') &&
+                    element?.textContent?.includes('Pokemon') || false
             })[0]).toBeInTheDocument()
         })
     })
@@ -237,7 +237,7 @@ describe('PokemonPage', () => {
         render(<PokemonWithRouter />)
 
         const searchInput = screen.getByPlaceholderText('Enter Pokemon name...')
-        
+
         await fireEventWithAct(fireEvent, searchInput, { target: { value: 'char' } })
 
         await waitFor(() => {
@@ -266,7 +266,7 @@ describe('PokemonPage', () => {
         render(<PokemonWithRouter />)
 
         const sortSelect = screen.getByLabelText('Sort by')
-        
+
         await fireEventWithAct(fireEvent, sortSelect, { target: { value: 'name' } })
 
         // The PokemonPage component doesn't handle sort changes directly
@@ -309,7 +309,7 @@ describe('PokemonPage', () => {
         render(<PokemonWithRouter />)
 
         const loadMoreButton = screen.getByText('Load More Pokemon')
-        
+
         await fireEventWithAct(fireEvent, loadMoreButton, { type: 'click' })
 
         expect(mockPokemonStore.loadMore).toHaveBeenCalled()
@@ -333,11 +333,11 @@ describe('PokemonPage', () => {
 
         await waitFor(() => {
             expect(screen.getAllByText((content, element) => {
-                return element?.textContent?.includes('Showing') && 
-                       element?.textContent?.includes('2') && 
-                       element?.textContent?.includes('of') && 
-                       element?.textContent?.includes('10') && 
-                       element?.textContent?.includes('Pokemon') || false
+                return element?.textContent?.includes('Showing') &&
+                    element?.textContent?.includes('2') &&
+                    element?.textContent?.includes('of') &&
+                    element?.textContent?.includes('10') &&
+                    element?.textContent?.includes('Pokemon') || false
             })[0]).toBeInTheDocument()
         })
     })
@@ -354,7 +354,7 @@ describe('PokemonPage', () => {
         })
 
         const addButton = screen.getByLabelText('Add to favorites')
-        
+
         await fireEventWithAct(fireEvent, addButton, { type: 'click' })
 
         expect(mockFavoritesStore.toggleFavorite).toHaveBeenCalledWith(1, 25) // user.id, Pikachu pokemon_id

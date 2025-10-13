@@ -48,19 +48,6 @@ export async function userEventWithAct(
     })
 }
 
-/**
- * Helper for fireEvent operations that need act() wrapping
- * Use this when using fireEvent for async operations
- */
-export async function fireEventWithAct(
-    fireEvent: any,
-    element: HTMLElement,
-    event: any
-) {
-    await act(async () => {
-        fireEvent(element, event)
-    })
-}
 
 // Re-export everything from testing-library for convenience
 export * from '@testing-library/react'

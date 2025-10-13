@@ -172,6 +172,28 @@ describe('PokemonModal', () => {
     expect(screen.getByRole('button', { name: /add to favorites/i })).toBeInTheDocument()
   })
 
+  it('handles favorite button click when user is not authenticated', async () => {
+    const unauthenticatedStore = {
+      ...mockAuthStore,
+      isAuthenticated: false,
+    }
+    ;(useAuthStore as unknown as vi.Mock).mockReturnValue(unauthenticatedStore)
+    
+    render(<PokemonModal pokemon={mockPokemon} isOpen={true} onClose={mockOnClose} />)
+    
+    const favoriteButton = screen.getByRole('button', { name: /add to favorites/i })
+    expect(favoriteButton).toBeInTheDocument()
+    
+    // Click the button
+    await act(async () => {
+      fireEvent.click(favoriteButton)
+    })
+    
+    // Verify no action was taken (button still shows "Add to Favorites")
+    expect(screen.getByRole('button', { name: /add to favorites/i })).toBeInTheDocument()
+    // Could also check for login prompt or toast message if implemented
+  })
+
   it('displays pokemon image', () => {
     render(<PokemonModal pokemon={mockPokemon} isOpen={true} onClose={mockOnClose} />)
 

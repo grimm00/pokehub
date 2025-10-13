@@ -1,11 +1,38 @@
 import React from 'react'
-import { render, screen, waitFor, fireEvent, fireEventWithAct } from '@/__tests__/test-utils/custom-render'
+import { render, screen, waitFor, fireEvent } from '@/__tests__/test-utils/custom-render'
+import { act } from 'react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import { PokemonPage } from '@/pages/PokemonPage'
 import { usePokemonStore } from '@/store/pokemonStore'
 import { useAuthStore } from '@/store/authStore'
 import { useFavoritesStore } from '@/store/favoritesStore'
+import { generationService } from '@/services/generationService'
+
+// Mock the generation service
+vi.mock('@/services/generationService', () => ({
+    generationService: {
+        getGenerations: vi.fn().mockResolvedValue({
+            generations: [
+                {
+                    generation: 1,
+                    name: 'Generation I',
+                    region: 'Kanto',
+                    year: 1996,
+                    pokemon_count: 151,
+                    expected_count: 151,
+                    color: '#ff6b6b',
+                    games: ['Red', 'Blue', 'Yellow'],
+                    description: 'The original Pokemon games',
+                    is_complete: true
+                }
+            ],
+            total_generations: 1,
+            total_pokemon: 151,
+            available_generations: [1]
+        })
+    }
+}))
 
 // Mock the stores
 
@@ -238,7 +265,9 @@ describe('PokemonPage', () => {
 
         const searchInput = screen.getByPlaceholderText('Enter Pokemon name...')
 
-        await fireEventWithAct(fireEvent, searchInput, { target: { value: 'char' } })
+        await act(async () => {
+            fireEvent.change(searchInput, { target: { value: 'char' } })
+        })
 
         await waitFor(() => {
             expect(mockPokemonStore.fetchPokemon).toHaveBeenCalledWith({ search: 'char', type: undefined, sort: 'id', page: 1 })
@@ -254,7 +283,9 @@ describe('PokemonPage', () => {
         expect(typeFilter).toHaveValue('all')
 
         // Test that the type filter can be changed
-        await fireEventWithAct(fireEvent, typeFilter, { target: { value: 'fire' } })
+        await act(async () => {
+            fireEvent.change(typeFilter, { target: { value: 'fire' } })
+        })
 
         // The PokemonSearch component handles type filter changes internally
         // This test verifies that the type filter is rendered and can be changed
@@ -267,7 +298,9 @@ describe('PokemonPage', () => {
 
         const sortSelect = screen.getByLabelText('Sort by')
 
-        await fireEventWithAct(fireEvent, sortSelect, { target: { value: 'name' } })
+        await act(async () => {
+            fireEvent.change(sortSelect, { target: { value: 'name' } })
+        })
 
         // The PokemonPage component doesn't handle sort changes directly
         // The PokemonSearch component handles it internally
@@ -310,7 +343,9 @@ describe('PokemonPage', () => {
 
         const loadMoreButton = screen.getByText('Load More Pokemon')
 
-        await fireEventWithAct(fireEvent, loadMoreButton, { type: 'click' })
+        await act(async () => {
+            fireEvent.click(loadMoreButton)
+        })
 
         expect(mockPokemonStore.loadMore).toHaveBeenCalled()
     })
@@ -355,7 +390,9 @@ describe('PokemonPage', () => {
 
         const addButton = screen.getByLabelText('Add to favorites')
 
-        await fireEventWithAct(fireEvent, addButton, { type: 'click' })
+        await act(async () => {
+            fireEvent.click(addButton)
+        })
 
         expect(mockFavoritesStore.toggleFavorite).toHaveBeenCalledWith(1, 25) // user.id, Pikachu pokemon_id
     })

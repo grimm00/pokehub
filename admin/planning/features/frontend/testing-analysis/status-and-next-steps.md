@@ -124,10 +124,12 @@
   - Create integration test structure
   - Add API and authentication flow tests
 
-- 🔄 **Task 4: Address PR52 Feedback** (30 min)
-  - Add error message auto-dismissal test
-  - Cleanup run-frontend-tests.sh
-  - Address any new PR review feedback
+- 🔄 **Task 4: Address PR52 & PR53 Feedback** (30-45 min)
+  - **HIGH**: Remove fireEventWithAct helper (PR53 Bugbot)
+  - **MEDIUM**: Add error message auto-dismissal test (PR52 Sourcery)
+  - **MEDIUM**: Add unauthenticated favorite click assertion (PR53 Sourcery)
+  - **LOW**: Refactor grid className test (PR53 Sourcery)
+  - **LOW**: Cleanup run-frontend-tests.sh
 
 ---
 

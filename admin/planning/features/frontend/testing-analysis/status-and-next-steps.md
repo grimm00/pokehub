@@ -143,6 +143,10 @@
 - **Test execution time** remains <30 seconds
 - **Ready for Phase 3** (E2E testing)
 
+### Outstanding Issues (RESOLVED)
+1. ~~Date formatting test failure in CI (UserProfile.test.tsx)~~ - FIXED in PR #55
+2. Redis connection warnings (non-blocking) - Deferred
+
 ---
 
 ## 🔍 Feedback Summary

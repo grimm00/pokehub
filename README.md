@@ -261,6 +261,52 @@ To run both frontend and backend together:
    - Open http://localhost:3001 in your browser
    - The frontend will automatically connect to the backend API
 
+## 🚀 Deployment
+
+### Cloud Deployment Options
+
+The application is ready for deployment to various cloud platforms:
+
+#### **Railway (Recommended)**
+- **Best for**: Docker-first deployment, learning
+- **Cost**: $5 free credit, then ~$5-10/month
+- **Setup**: Connect GitHub repo, auto-detects Docker
+- **Features**: Automatic HTTPS, custom domains, PostgreSQL upgrade path
+
+#### **Render**
+- **Best for**: Free tier testing
+- **Cost**: Free tier available, paid $7/month
+- **Setup**: Connect GitHub, select Docker
+- **Features**: Auto-deploy, PostgreSQL free tier
+
+#### **Other Options**
+- **Fly.io**: Docker-native, generous free tier
+- **DigitalOcean App Platform**: Production-ready, $5/month
+- **Heroku**: Simple deployment (requires restructuring)
+
+### Quick Deployment (Railway)
+
+1. **Prepare environment**:
+   ```bash
+   cp env.example .env
+   # Update .env with production values
+   ```
+
+2. **Deploy**:
+   - Sign up at [railway.app](https://railway.app)
+   - Connect GitHub account
+   - Create new project from this repository
+   - Railway auto-detects Docker and deploys
+
+3. **Configure**:
+   - Set environment variables in Railway dashboard
+   - Deploy and test
+
+### Detailed Deployment Guide
+
+For comprehensive deployment instructions, see:
+- **[Deployment Guide](admin/technical/deployment-guide.md)** - Complete cloud provider comparison and step-by-step deployment instructions
+
 ## 🌳 Development Workflow
 
 We use **Git Flow** for organized development:

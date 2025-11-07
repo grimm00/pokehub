@@ -132,3 +132,6 @@ pnpm-lock.yaml
 # Generated artifacts
 validation-results/
 project-index/
+
+# Reference files for future CI workflow updates
+admin/planning/notes/opportunities/external/ci/cdwilson-docker-build-and-push.yaml
